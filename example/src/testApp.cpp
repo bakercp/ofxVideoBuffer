@@ -41,7 +41,7 @@ void testApp::setup(){
     currentVideoSource  = 0;
     
     
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 6; i++) {
         ofxVideoBuffer* videoBuffer = new ofxVideoBuffer(100);
         buffers.push_back(videoBuffer);
         ofxVideoBufferPlayer* videoPlayer = new ofxVideoBufferPlayer();
@@ -123,12 +123,15 @@ void testApp::draw(){
     keys += "  [[] Loop Point (start) (DOWN)\n";
     keys += "  [{] Loop Point (end)   (DOWN)\n";
     keys += "  []] Loop Point (start) (UP)\n";
-    keys += "  [}] Loop Point (end)    (UP)\n";
+    keys += "  [}] Loop Point (end)   (UP)\n";
     keys += "  [c] Clear Loop Points\n";
     keys += "\n";
     keys += "  [-] Decrease Speed\n";
     keys += "  [=] Increase Speed\n";
-    
+    keys += "\n";
+    keys += "  [_] Decrease Position\n";
+    keys += "  [+] Increase Position\n";
+
     
     ofSetColor(255);
     ofDrawBitmapString(keys,20,400);
@@ -174,9 +177,9 @@ void testApp::draw(){
         ofDrawBitmapString(stats, x + 20, y + 20);
         
         
-        x += (camWidth + 5);
+        x += (camWidth + 0);
         if((x + 320)> ofGetWidth()) {
-            y+= camHeight + 5;
+            y+= camHeight + 0;
             x = 320;
         }
     }
@@ -200,6 +203,7 @@ void testApp::keyPressed  (int key){
     
     float speed = bufferPlayers[currentBufferPlayer]->getSpeed();
 
+    int position = bufferPlayers[currentBufferPlayer]->getPosition();
     
     switch (key) {
         case '`':
@@ -249,14 +253,19 @@ void testApp::keyPressed  (int key){
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->loadMovie("fingers.mov");
             break;
         case '-':
-            speed -= .25;
+            speed -= .05;
             bufferPlayers[currentBufferPlayer]->setSpeed(speed);
             break;
         case '=':
-            speed += .25;
+            speed += .05;
             bufferPlayers[currentBufferPlayer]->setSpeed(speed);
             break;
-            
+        case '_':
+            bufferPlayers[currentBufferPlayer]->setPosition(position - 1);
+            break;
+        case '+':
+            bufferPlayers[currentBufferPlayer]->setPosition(position + 1);
+            break;
         default:
             break;
     }
