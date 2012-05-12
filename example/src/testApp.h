@@ -37,6 +37,6 @@ public:
     int currentBufferPlayer;
     int currentVideoSource;
     
-    bool isBuffering;
+    bool isRecording;
         
 };

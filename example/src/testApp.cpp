@@ -50,7 +50,7 @@ void testApp::setup(){
     }
     
     
-    isBuffering = false;
+    isRecording = false;
 	
 }
 
@@ -79,7 +79,7 @@ void testApp::draw(){
     ofDrawBitmapString("LIVE GRABBER", 22,32);
     if(currentVideoSource == 0) {
         
-        ofSetColor(isBuffering ? 0 : 255,255,0);
+        ofSetColor(isRecording ? 0 : 255,255,0);
         ofNoFill();
         ofRect(20,20,160,120);
     }
@@ -88,7 +88,7 @@ void testApp::draw(){
     vidIpCam.draw(20,140,160,120);
     ofDrawBitmapString("LIVE WEB", 22,152);
     if(currentVideoSource == 1) {
-        ofSetColor(isBuffering ? 0 : 255,255,0);
+        ofSetColor(isRecording ? 0 : 255,255,0);
         ofNoFill();
         ofRect(20,140,160,120);
     }
@@ -98,7 +98,7 @@ void testApp::draw(){
     vidPlayer.draw(20,260,160,120);
     ofDrawBitmapString("VID", 22,272);
     if(currentVideoSource == 2) {
-        ofSetColor(isBuffering ? 0 : 255,255,0);
+        ofSetColor(isRecording ? 0 : 255,255,0);
         ofNoFill();
         ofRect(20,260,160,120);
     }
@@ -114,7 +114,7 @@ void testApp::draw(){
     keys += "\n";
     keys += "All settings below apply to the\n"; 
     keys += "current player and buffer.\n";
-    keys += "  [SPACE] Toggle Buffering\n";
+    keys += "  [SPACE] Toggle Recording\n";
     keys += "  [x] Clear Buffer\n";
     keys += "  [?] Load Test Video Into Buffer\n";
     keys += "  [p] Next Buffer Mode\n";
@@ -133,12 +133,12 @@ void testApp::draw(){
     ofSetColor(255);
     ofDrawBitmapString(keys,20,400);
     
-    if(isBuffering) {
+    if(isRecording) {
         if(currentVideoSource == 0 && vidGrabber.isFrameNew()) {
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidGrabber.getPixelsRef());
         } else if(currentVideoSource == 1 ) {//&& vidIpCam.isFrameNew()) { // TODO
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidIpCam.getPixelsRef());
-        } else if(currentVideoSource == 2 && vidPlayer.isFrameNew()) {
+        } else if(currentVideoSource == 2 && vidPlayer.isFrameNew() ) {
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidPlayer.getPixelsRef());
         }
     }
@@ -194,7 +194,7 @@ void testApp::draw(){
 void testApp::keyPressed  (int key){
    
     int l0 = bufferPlayers[currentBufferPlayer]->getLoopPointsStart();
-    int l1 = bufferPlayers[currentBufferPlayer]->getLoopPointsStart();
+    int l1 = bufferPlayers[currentBufferPlayer]->getLoopPointsEnd();
     ofLoopType lt = bufferPlayers[currentBufferPlayer]->getLoopType(); 
     ofVideoBufferType vbt = bufferPlayers[currentBufferPlayer]->getVideoBuffer()->getBufferType();
     
@@ -240,11 +240,12 @@ void testApp::keyPressed  (int key){
             bufferPlayers[currentBufferPlayer]->clearLoopPoints();
             break;
         case ' ':
-            isBuffering = !isBuffering;
+            isRecording = !isRecording;
             break;
         case 'x':
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->clear();
-        case '?':
+            break;
+        case '0':
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->loadMovie("fingers.mov");
             break;
         case '-':
