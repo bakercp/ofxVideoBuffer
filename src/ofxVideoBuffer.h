@@ -30,9 +30,10 @@ public:
 
     void  update(ofEventArgs & args);  // notify in update so the notification is thread safe
     
+    void  loadImage(string _filename);
     void  loadMovie(string _filename);  // this will load a video into the buffer in another thread
 	void  loadMovie(string _filename, int _startFrame, int _endFrame); // "
-    bool  isLoadingMovie();             // checks to see if the video is loading
+    bool  isLoading();             // checks to see if the video is loading
     
     bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
 

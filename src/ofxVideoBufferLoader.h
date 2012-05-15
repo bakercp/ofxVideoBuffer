@@ -4,9 +4,14 @@
 #include "ofxVideoBufferTypes.h"
 
 enum ofxVideoBufferLoaderState {
-    OFX_VID_BUFFER_IDLE,
-    OFX_VID_BUFFER_LOADING,
-    OFX_VID_BUFFER_COMPLETE
+    OFX_VID_BUFFER_IDLE     = 0,
+    OFX_VID_BUFFER_LOADING  = 1,
+    OFX_VID_BUFFER_COMPLETE = 2
+};
+
+enum ofxVideoBufferLoadType {
+    OFX_VID_BUFFER_LOAD_IMAGE = 0,
+    OFX_VID_BUFFER_LOAD_VIDEO = 1,
 };
 
 class ofxVideoBufferLoader : protected ofThread {
@@ -16,6 +21,7 @@ public:
     ofxVideoBufferLoader();
     virtual ~ofxVideoBufferLoader();    
 
+    void loadImage(ofxVideoBufferData* _buffer, string _filename);
 	void loadMovie(ofxVideoBufferData* _buffer, string _filename);
 	void loadMovie(ofxVideoBufferData* _buffer, string _filename, int _startFrame, int _endFrame);
 
@@ -43,11 +49,13 @@ protected:
     
 	ofxVideoBufferData* buffer;
 	ofVideoPlayer player;
+    ofImage image;
     
     // thread functions
     void threadedFunction();
     
     ofxVideoBufferLoaderState state;
+    ofxVideoBufferLoadType    loadType;
 };
 
 

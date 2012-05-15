@@ -44,6 +44,11 @@ void ofxVideoBuffer::update(ofEventArgs & args) {
 }
 
 //--------------------------------------------------------------
+void ofxVideoBuffer::loadImage(string _filename) {
+    loader.loadImage(&buffer,_filename);
+}
+
+//--------------------------------------------------------------
 void ofxVideoBuffer::loadMovie(string _filename) {
     loadMovie(_filename,0,INT_MAX);
 }
@@ -54,7 +59,7 @@ void ofxVideoBuffer::loadMovie(string _filename, int _startFrame, int _endFrame)
 }
 
 //--------------------------------------------------------------
-bool  ofxVideoBuffer::isLoadingMovie() {
+bool  ofxVideoBuffer::isLoading() {
     return loader.isLoading();
 }
 

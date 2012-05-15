@@ -10,10 +10,11 @@
 // TODO:
 // video loop event
 
-enum ofxVideoSamplerSourceType {
-    OFX_VIDEO_SAMPLER_SOURCE_TYPE_NONE  = 99,
-    OFX_VIDEO_SAMPLER_SOURCE_TYPE_VIDEOPLAYER = 33,
-    OFX_VIDEO_SAMPLER_SOURCE_TYPE_VIDEOBUFFER = 88,
+enum ofxVideoPlayerSourceType {
+    OFX_VIDEO_PLAYER_SRC_TYPE_NONE        = 0,
+    OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE       = 1,
+    OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER = 2,
+    OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER = 3,
 };
 
 class ofxVideoPlayer : public ofBaseVideoDraws {
@@ -57,12 +58,15 @@ public:
     
     //////////////////////////////////////////////////
     // Source ////////////////////////////////////////
+    void loadImage(string filename);
     void loadMovie(string filename);
     void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
 
+    ofImage&        getImagePlayer();
     ofVideoPlayer&  getVideoPlayer();   // get the internal video player
     ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
     
+    bool    isImagePlayer();
     bool    isVideoPlayer();
     bool    isBufferPlayer();
     
@@ -112,13 +116,14 @@ protected:
 
     ofxVideoFrame  emptyFrame;      // the empty frame
     
+    ofImage         image;
     ofxVideoBuffer* buffer;         // the pointer to the current video buffer 
     ofVideoPlayer   player;         // the pointer to the current video player 
                                     // if the player is playing from disk, it must
                                     // own its own ofVideoPlayer.  ofVideoPlayer does
                                     // not take kindly to multi-tap frames.
 
-    ofxVideoSamplerSourceType   sourceType; // the type of the source
+    ofxVideoPlayerSourceType   sourceType; // the type of the source
     
     // playback
     float speed;                    // the speed scaler

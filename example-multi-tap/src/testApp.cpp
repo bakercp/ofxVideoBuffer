@@ -17,8 +17,8 @@ testApp::~testApp() {
 void testApp::setup(){
 	
     // modifiy this
-    rows = 8;
-    cols = 8;
+    rows = 50;
+    cols = 50;
     useBuffer = true;
     
     //////
@@ -55,24 +55,33 @@ void testApp::setup(){
     buffer = new ofxVideoBuffer();
     buffer->loadMovie("dvducks.mov");
     buffers.push_back(buffer);
-
     buffer = new ofxVideoBuffer();
     buffer->loadMovie("garbage.mov");
     buffers.push_back(buffer);
-
     buffer = new ofxVideoBuffer();
     buffer->loadMovie("oh.mov");
     buffers.push_back(buffer);
-
     buffer = new ofxVideoBuffer();
     buffer->loadMovie("ozone.mov");
     buffers.push_back(buffer);
-
     buffer = new ofxVideoBuffer();
     buffer->loadMovie("rain.mov");
     buffers.push_back(buffer);
-
-    
+    buffer = new ofxVideoBuffer();
+    buffer->loadImage("IMG_0004.JPG");
+    buffers.push_back(buffer);
+    buffer = new ofxVideoBuffer();
+    buffer->loadImage("IMG_0003.JPG");
+    buffers.push_back(buffer);
+    buffer = new ofxVideoBuffer();
+    buffer->loadImage("IMG_0005.JPG");
+    buffers.push_back(buffer);
+    buffer = new ofxVideoBuffer();
+    buffer->loadImage("IMG_0006.JPG");
+    buffers.push_back(buffer);
+    buffer = new ofxVideoBuffer();
+    buffer->loadImage("IMG_0007.JPG");
+    buffers.push_back(buffer);
     
     for(int i = 0; i < rows * cols; i++) {
         ofxVideoPlayer* player = new ofxVideoPlayer();
@@ -176,11 +185,8 @@ void testApp::keyPressed  (int key){
        vbt = players[currentPlayer]->getVideoBuffer()->getBufferType();
     }
     
-    
     float speed = players[currentPlayer]->getSpeed();
-
     int frame = players[currentPlayer]->getFrame();
-    
     int cnt = players[currentPlayer]->getCount();
     
     switch (key) {
@@ -189,7 +195,7 @@ void testApp::keyPressed  (int key){
             break;
         case ' ':
             for(int i = 0; i < rows * cols; i++) {
-               players[i]->setFrame((int)ofRandom(cnt));
+               players[i]->setFrame(int(ofRandom(players[i]->getCount())));
             }
             break;
         case '`':
