@@ -15,7 +15,7 @@
 
 // buffer types
 enum ofVideoBufferType {
-    OFX_VIDEO_BUFFER_NORMAL,
+    OFX_VIDEO_BUFFER_FIXED,
     OFX_VIDEO_BUFFER_CIRCULAR,
     OFX_VIDEO_BUFFER_PASSTHROUGH,
 };
@@ -55,13 +55,16 @@ public:
     void setBufferType(ofVideoBufferType type);
     ofVideoBufferType getBufferType() const;
 
-    bool isNormalBuffer() const;        // the normal buffer mode (i.e. fixed size)
+    bool isFixedBuffer() const;        // the normal buffer mode (i.e. fixed size)
     bool isPassthroughBuffer() const;   // a passthrough buffer
     bool isCircularBuffer() const;      // a buffer of fixed size, FIFO style
     
     // TODO: buffer wide texture use?  texture only as needed?
     // void setUseTexture(bool usesTexture);
     // bool bUsesTextures; // the buffer uses textures
+    
+    float getFrameRate();
+    void  setFrameRate(float frameRate);
     
 protected:
     int                  count;  // the count is the number of "valid" frames in the buffer
@@ -73,6 +76,8 @@ protected:
                                  // in another thread.  the update function in 
                                  // this class checks on that loader and uploads the 
                                  // pixels to textures from the main thread.
+    
+    float frameRate;
 };
 
 

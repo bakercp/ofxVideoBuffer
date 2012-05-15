@@ -4,9 +4,10 @@
 
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
-    count = mom.count;
-    mode  = mom.mode;
-    buffer = mom.buffer;
+    count     = mom.count;
+    mode      = mom.mode;
+    buffer    = mom.buffer;
+    frameRate = mom.frameRate;
     // loader is created here on construction
 
     // connect to the update event listener
@@ -15,8 +16,9 @@ ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
 
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(int _size) {
+    frameRate = 0.0f;
     count = 0;
-    mode    = OFX_VIDEO_BUFFER_NORMAL;
+    mode    = OFX_VIDEO_BUFFER_FIXED;
     buffer.resize(_size, ofxVideoFrame()); // resize buffer
     // connect to the update event listener
     ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
@@ -66,7 +68,7 @@ bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
     if(isPassthroughBuffer()) {
         buffer[0].setFromPixels(pixels); // the 0th frame is always the passthrough frame
         return true;
-    } else if(isNormalBuffer()) {
+    } else if(isFixedBuffer()) {
         if(count < getSize()) {
             buffer[count].setFromPixels(pixels);
             count++;
@@ -76,7 +78,7 @@ bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
         }
     } else if(isCircularBuffer()) {
         if(count < getSize()) {
-            // still adding like a normal buffer
+            // still adding like a fixed buffer
             buffer[count].setFromPixels(pixels);
             count++;
             return true;
@@ -166,8 +168,8 @@ ofVideoBufferType ofxVideoBuffer::getBufferType() const {
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBuffer::isNormalBuffer() const {
-    return mode == OFX_VIDEO_BUFFER_NORMAL;
+bool ofxVideoBuffer::isFixedBuffer() const {
+    return mode == OFX_VIDEO_BUFFER_FIXED;
 }
 
 //--------------------------------------------------------------
@@ -180,11 +182,18 @@ bool ofxVideoBuffer::isCircularBuffer() const {
     return mode == OFX_VIDEO_BUFFER_CIRCULAR;
 }
 
+//--------------------------------------------------------------
+float ofxVideoBuffer::getFrameRate() {
+    if(frameRate == 0.0f) {
+        return 30.0f;
+    } else {
+        return frameRate;
+    }
+}
 
-
-
-
-
-
+//--------------------------------------------------------------
+void  ofxVideoBuffer::setFrameRate(float _frameRate) {
+    frameRate = _frameRate;
+}
 
 
