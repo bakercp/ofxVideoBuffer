@@ -86,12 +86,15 @@ public:
     void setLoopPointStart(int frame);
     void setLoopPointEnd(int frame);
 
-    void setLoopPointsNorm(float start, float end);
-    void setLoopPointStartNorm(float frame);
-    void setLoopPointEndNorm(float frame);
+    void setLoopPointsNorm(float startn, float endn);
+    void setLoopPointStartNorm(float framen);
+    void setLoopPointEndNorm(float framen);
     
-	int getLoopPointsStart();
-    int getLoopPointsEnd();
+	int getLoopPointStart();
+    int getLoopPointEnd();
+
+    float getLoopPointStartNorm();
+    float getLoopPointEndNorm();
 
     void clearLoopPoints();
     
@@ -100,9 +103,10 @@ public:
     
     //////////////////////////////////////////////////
     // Positioning ///////////////////////////////////
-    void setFrame(int frame);
-    void setFrameNorm(float frame);
-    int  getFrame();
+    void  setFrame(int frame);
+    void  setFrameNorm(float framen);
+    int   getFrame();
+    float getFrameNorm();
     
     //////////////////////////////////////////////////
     // Playback //////////////////////////////////////
@@ -162,7 +166,7 @@ protected:
 	
     int bufferMod(int frame);
     
-    int     frameNormtoFrame(float n);
+    int     frameNormToFrame(float n);
     float   frameToFrameNorm(int   frame);
     
 };
