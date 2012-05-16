@@ -20,11 +20,13 @@ enum ofVideoBufferType {
     OFX_VIDEO_BUFFER_PASSTHROUGH,
 };
 
+
+
 class ofxVideoBuffer {
 public:
     // a buffer always has at least one frame
     
-    ofxVideoBuffer(ofxVideoBuffer& mom); // for making copies
+   // ofxVideoBuffer(ofxVideoBuffer& mom); // for making copies
     ofxVideoBuffer(int _bufferSize = 1); // must always be at least one frame
     virtual ~ofxVideoBuffer();    
 
@@ -63,10 +65,13 @@ public:
     // TODO: buffer wide texture use?  texture only as needed?
     // void setUseTexture(bool usesTexture);
     // bool bUsesTextures; // the buffer uses textures
-    
+
+    void  setUseTexture(bool bUseTex);
+
     float getFrameRate();
     void  setFrameRate(float frameRate);
     
+
 protected:
     int                  count;  // the count is the number of "valid" frames in the buffer
     ofVideoBufferType    mode;   // the buffer mode (circular, etc)
@@ -77,6 +82,8 @@ protected:
                                  // in another thread.  the update function in 
                                  // this class checks on that loader and uploads the 
                                  // pixels to textures from the main thread.
+    
+    bool    bUseTexture;
     
     float frameRate;
 };

@@ -1,7 +1,7 @@
  
 #include "ofxVideoBuffer.h"
 
-
+/*
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
     count     = mom.count;
@@ -12,7 +12,8 @@ ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
 
     // connect to the update event listener
     ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
-}
+ ofRemoveListener(ofEvents().update,this,&ofxVideoBuffer::update);
+} */
 
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(int _size) {

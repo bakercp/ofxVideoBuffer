@@ -9,18 +9,20 @@
 
 // TODO:
 // video loop event
+// - move video backed buffer to ofxvideobuffer.
+// - the ofxVideoBufferPlayer should only be a video buffer player.
 
-enum ofxVideoPlayerSourceType {
+enum ofxVideoBufferPlayerSourceType {
     OFX_VIDEO_PLAYER_SRC_TYPE_NONE        = 0,
     OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE       = 1,
     OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER = 2,
     OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER = 3,
 };
 
-class ofxVideoPlayer : public ofBaseVideoDraws {
+class ofxVideoBufferPlayer : public ofBaseVideoDraws {
 public:
-    ofxVideoPlayer(); 
-    virtual ~ofxVideoPlayer();
+    ofxVideoBufferPlayer(); 
+    virtual ~ofxVideoBufferPlayer();
 
     //////////////////////////////////////////////////
     // Frame Access //////////////////////////////////
@@ -81,9 +83,13 @@ public:
     //////////////////////////////////////////////////
     // Looping ///////////////////////////////////////
     void setLoopPoints(int start, int end);
-    bool setLoopPointsStart(int frame);
-    bool setLoopPointsEnd(int frame);
+    void setLoopPointStart(int frame);
+    void setLoopPointEnd(int frame);
 
+    void setLoopPointsNorm(float start, float end);
+    void setLoopPointStartNorm(float frame);
+    void setLoopPointEndNorm(float frame);
+    
 	int getLoopPointsStart();
     int getLoopPointsEnd();
 
@@ -95,11 +101,19 @@ public:
     //////////////////////////////////////////////////
     // Positioning ///////////////////////////////////
     void setFrame(int frame);
+    void setFrameNorm(float frame);
     int  getFrame();
     
     //////////////////////////////////////////////////
     // Playback //////////////////////////////////////
 
+    void  start();
+    void  stop();
+    bool  isPlaying();
+    
+    void  setPaused(bool bIsPaused);
+    bool  isPaused();
+    
     void  setSpeed(float speed);
     float getSpeed();
     
@@ -123,9 +137,11 @@ protected:
                                     // own its own ofVideoPlayer.  ofVideoPlayer does
                                     // not take kindly to multi-tap frames.
 
-    ofxVideoPlayerSourceType   sourceType; // the type of the source
+    ofxVideoBufferPlayerSourceType   sourceType; // the type of the source
     
     // playback
+    bool  bIsPlaying;               // is stopped?
+    bool  bIsPaused;                // is paused?
     float speed;                    // the speed scaler
     float playDirection;            // forward or backward (for palindrome)
     
@@ -144,7 +160,10 @@ protected:
 	int loopPointsStart;            // the loop start point
 	int loopPointsEnd;              // the loop stop  point
 	
-    int mod(int frame);
+    int bufferMod(int frame);
+    
+    int     frameNormtoFrame(float n);
+    float   frameToFrameNorm(int   frame);
     
 };
 
