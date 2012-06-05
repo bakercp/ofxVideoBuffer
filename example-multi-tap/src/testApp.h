@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxVideoPlayer.h"
+#include "ofxVideoBufferPlayer.h"
 #include "ofxVideoBuffer.h"
 
 class testApp : public ofBaseApp{
@@ -23,7 +23,7 @@ public:
     void resized(int w, int h);
 
     vector<ofxVideoBuffer*> buffers;
-    vector<ofxVideoPlayer*> players;
+    vector<ofxVideoBufferPlayer*> players;
     
     bool useBuffer;
     

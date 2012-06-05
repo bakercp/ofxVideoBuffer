@@ -337,7 +337,7 @@ void ofxVideoBufferPlayer::update() {
     if(isEmpty()) return;
     
     float now = ofGetElapsedTimef();
-    
+        
     // if this is the first time
     if(lastFramePushTime == -1) {
         lastFramePushTime = now;
@@ -364,8 +364,8 @@ void ofxVideoBufferPlayer::update() {
     ///////////////////////////////////////////
 
     lastFramePushTime = now;
-
-    if(numFramesToPush != 0 && isPlaying() && !isPlaying()) {
+    
+    if(numFramesToPush != 0 && isPlaying() && !isPaused()) {
         
         
         if(loopType == OF_LOOP_NONE) {

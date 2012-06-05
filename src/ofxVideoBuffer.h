@@ -20,14 +20,13 @@ enum ofVideoBufferType {
     OFX_VIDEO_BUFFER_PASSTHROUGH,
 };
 
-
-
 class ofxVideoBuffer {
 public:
     // a buffer always has at least one frame
     
-   // ofxVideoBuffer(ofxVideoBuffer& mom); // for making copies
-    ofxVideoBuffer(int _bufferSize = 1); // must always be at least one frame
+    ofxVideoBuffer();
+    ofxVideoBuffer(int _bufferSize); 
+    ofxVideoBuffer(int _bufferSize, ofVideoBufferType _type);
     virtual ~ofxVideoBuffer();    
 
     void  update(ofEventArgs & args);  // notify in update so the notification is thread safe

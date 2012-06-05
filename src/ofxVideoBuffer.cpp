@@ -16,10 +16,30 @@ ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
 } */
 
 //--------------------------------------------------------------
+ofxVideoBuffer::ofxVideoBuffer() {
+    frameRate = 0.0f;
+    count = 0;
+    mode    = OFX_VIDEO_BUFFER_FIXED;
+    buffer.resize(1, ofxVideoFrame()); // resize buffer
+    // connect to the update event listener
+    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+}
+
+//--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(int _size) {
     frameRate = 0.0f;
     count = 0;
     mode    = OFX_VIDEO_BUFFER_FIXED;
+    buffer.resize(_size, ofxVideoFrame()); // resize buffer
+    // connect to the update event listener
+    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+}
+
+//--------------------------------------------------------------
+ofxVideoBuffer::ofxVideoBuffer(int _size, ofVideoBufferType _type) {
+    frameRate = 0.0f;
+    count = 0;
+    mode    = _type;
     buffer.resize(_size, ofxVideoFrame()); // resize buffer
     // connect to the update event listener
     ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);

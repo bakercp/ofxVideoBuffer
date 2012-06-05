@@ -84,11 +84,13 @@ void testApp::setup(){
     buffers.push_back(buffer);
     
     for(int i = 0; i < rows * cols; i++) {
-        ofxVideoPlayer* player = new ofxVideoPlayer();
+        ofxVideoBufferPlayer* player = new ofxVideoBufferPlayer();
         if(useBuffer) {
             player->loadVideoBuffer(buffers[int(ofRandom(buffers.size()))]);
+            player->start();
         } else {
             player->loadMovie("fingers_pjpeg.mov");
+            player->start();
         }
         player->setLoopType(OF_LOOP_PALINDROME);
         players.push_back(player);
@@ -177,8 +179,8 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed  (int key){
    
-    int l0 = players[currentPlayer]->getLoopPointsStart();
-    int l1 = players[currentPlayer]->getLoopPointsEnd();
+    int l0 = players[currentPlayer]->getLoopPointStart();
+    int l1 = players[currentPlayer]->getLoopPointEnd();
     ofLoopType lt = players[currentPlayer]->getLoopType(); 
     ofVideoBufferType vbt = OFX_VIDEO_BUFFER_FIXED;
     if(players[currentPlayer]->isBufferPlayer()) {
@@ -209,16 +211,16 @@ void testApp::keyPressed  (int key){
             players[currentPlayer]->setLoopType(lt); 
             break;
         case '[':
-            players[currentPlayer]->setLoopPointsStart(l0-1);
+            players[currentPlayer]->setLoopPointStart(l0-1);
             break;
         case '{':
-            players[currentPlayer]->setLoopPointsEnd(l1-1);
+            players[currentPlayer]->setLoopPointEnd(l1-1);
             break;
         case ']':
-            players[currentPlayer]->setLoopPointsStart(l0+1);
+            players[currentPlayer]->setLoopPointStart(l0+1);
             break;
         case '}':
-            players[currentPlayer]->setLoopPointsEnd(l1+1);
+            players[currentPlayer]->setLoopPointEnd(l1+1);
             break;
         case 'c':
             players[currentPlayer]->clearLoopPoints();

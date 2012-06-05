@@ -45,8 +45,10 @@ void testApp::setup(){
         ofxVideoBuffer* videoBuffer = new ofxVideoBuffer(100);
         buffers.push_back(videoBuffer);
         ofxVideoBufferPlayer* videoPlayer = new ofxVideoBufferPlayer();
-        videoPlayer->loadBuffer(videoBuffer);
+        videoPlayer->loadVideoBuffer(videoBuffer);
         bufferPlayers.push_back(videoPlayer);
+        
+        videoPlayer->start();
     }
     
     
@@ -164,7 +166,7 @@ void testApp::draw(){
         ofNoFill();
         ofRect(x,y,camWidth,camHeight);
         
-        if(!bufferPlayers[i]->getVideoBuffer()->isLoadingMovie()) {
+        if(!bufferPlayers[i]->getVideoBuffer()->isLoading()) {
             float p = bufferPlayers[i]->getVideoBuffer()->getPercentFull();
             ofFill();
             ofSetColor(255,255,0,127);
@@ -196,14 +198,15 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed  (int key){
    
-    int l0 = bufferPlayers[currentBufferPlayer]->getLoopPointsStart();
-    int l1 = bufferPlayers[currentBufferPlayer]->getLoopPointsEnd();
+    int l0 = bufferPlayers[currentBufferPlayer]->getLoopPointStart();
+    int l1 = bufferPlayers[currentBufferPlayer]->getLoopPointEnd();
     ofLoopType lt = bufferPlayers[currentBufferPlayer]->getLoopType(); 
     ofVideoBufferType vbt = bufferPlayers[currentBufferPlayer]->getVideoBuffer()->getBufferType();
     
     float speed = bufferPlayers[currentBufferPlayer]->getSpeed();
 
-    int position = bufferPlayers[currentBufferPlayer]->getPosition();
+    
+    int position = bufferPlayers[currentBufferPlayer]->getFrame();
     
     switch (key) {
         case '`':
@@ -216,9 +219,9 @@ void testApp::keyPressed  (int key){
             vidGrabber.videoSettings();
             break;
         case 'p':
-            if(vbt == OFX_VIDEO_BUFFER_NORMAL) vbt = OFX_VIDEO_BUFFER_CIRCULAR; 
+            if(vbt == OFX_VIDEO_BUFFER_FIXED) vbt = OFX_VIDEO_BUFFER_CIRCULAR; 
             else if(vbt == OFX_VIDEO_BUFFER_CIRCULAR) vbt = OFX_VIDEO_BUFFER_PASSTHROUGH; 
-            else if(vbt == OFX_VIDEO_BUFFER_PASSTHROUGH) vbt = OFX_VIDEO_BUFFER_NORMAL; 
+            else if(vbt == OFX_VIDEO_BUFFER_PASSTHROUGH) vbt = OFX_VIDEO_BUFFER_FIXED; 
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->setBufferType(vbt);
             break;
         case 'q':
@@ -229,16 +232,16 @@ void testApp::keyPressed  (int key){
             bufferPlayers[currentBufferPlayer]->setLoopType(lt); 
             break;
         case '[':
-            bufferPlayers[currentBufferPlayer]->setLoopPointsStart(l0-1);
+            bufferPlayers[currentBufferPlayer]->setLoopPointStart(l0-1);
             break;
         case '{':
-            bufferPlayers[currentBufferPlayer]->setLoopPointsEnd(l1-1);
+            bufferPlayers[currentBufferPlayer]->setLoopPointEnd(l1-1);
             break;
         case ']':
-            bufferPlayers[currentBufferPlayer]->setLoopPointsStart(l0+1);
+            bufferPlayers[currentBufferPlayer]->setLoopPointStart(l0+1);
             break;
         case '}':
-            bufferPlayers[currentBufferPlayer]->setLoopPointsEnd(l1+1);
+            bufferPlayers[currentBufferPlayer]->setLoopPointEnd(l1+1);
             break;
         case 'c':
             bufferPlayers[currentBufferPlayer]->clearLoopPoints();
@@ -261,10 +264,10 @@ void testApp::keyPressed  (int key){
             bufferPlayers[currentBufferPlayer]->setSpeed(speed);
             break;
         case '_':
-            bufferPlayers[currentBufferPlayer]->setPosition(position - 1);
+            bufferPlayers[currentBufferPlayer]->setFrame(position - 1);
             break;
         case '+':
-            bufferPlayers[currentBufferPlayer]->setPosition(position + 1);
+            bufferPlayers[currentBufferPlayer]->setFrame(position + 1);
             break;
         default:
             break;
