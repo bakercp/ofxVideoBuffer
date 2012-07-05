@@ -49,7 +49,7 @@ protected:
     
 	ofxVideoBufferData* buffer;
 	ofVideoPlayer player;
-    ofImage image;
+    ofxVideoFrame image;
     
     // thread functions
     void threadedFunction();

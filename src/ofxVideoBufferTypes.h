@@ -10,6 +10,6 @@
 
 #include "ofMain.h"
 
-typedef ofImage              ofxVideoFrame;
-typedef deque<ofxVideoFrame> ofxVideoBufferData;
+typedef ofPtr<ofImage>       ofxVideoFrame;
+typedef deque< ofxVideoFrame > ofxVideoBufferData;
 

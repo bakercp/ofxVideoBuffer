@@ -12,10 +12,12 @@ ofxVideoBufferLoader::~ofxVideoBufferLoader() {}
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, string _filename) {
     
-    if(image.loadImage(_filename)) {
+    image = ofPtr<ofImage>(new ofImage());
+    
+    if(image->loadImage(_filename)) {
         loadType = OFX_VID_BUFFER_LOAD_IMAGE;
         buffer = _buffer;
-        image.setUseTexture(false); // important
+        image->setUseTexture(false); // important
         startFrame = 0;
         endFrame   = 0;
         currentFrame = 0;
@@ -110,14 +112,14 @@ void ofxVideoBufferLoader::threadedFunction(){
     } else if(loadType == OFX_VID_BUFFER_LOAD_VIDEO) {
         while (currentFrame <= endFrame) {
             if( lock() ){
-                ofImage frame;
-                frame.setUseTexture(false);
+                ofxVideoFrame frame = ofPtr<ofImage>(new ofImage());
+                frame->setUseTexture(false);
                 // TODO: there are strange sitatuations with set frame.
                 // setFrame(0) is equal to setFrame(1) in most cases.
                 // is this normal?
                 
                 player.setFrame(currentFrame);
-                frame.setFromPixels(player.getPixelsRef());
+                frame->setFromPixels(player.getPixelsRef());
                 buffer->push_back(frame);
                 currentFrame++;
                 unlock();

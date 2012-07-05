@@ -4,7 +4,12 @@
 
 //--------------------------------------------------------------
 ofxVideoBufferPlayer::ofxVideoBufferPlayer() {
-    emptyFrame.allocate(1,1,OF_IMAGE_COLOR);
+    emptyFrame = ofxVideoFrame(new ofImage());
+    emptyFrame->allocate(1,1,OF_IMAGE_COLOR);
+    
+    image      = ofxVideoFrame(new ofImage());
+    image->allocate(1,1,OF_IMAGE_COLOR);
+    
     
     buffer = NULL;
     
@@ -40,7 +45,7 @@ bool ofxVideoBufferPlayer::isFrameNew() {
 void ofxVideoBufferPlayer::close() {
     buffer = NULL;
     player.close();
-    image.clear();
+    image->clear();
     sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_NONE;
 }
 
@@ -48,18 +53,18 @@ void ofxVideoBufferPlayer::close() {
 unsigned char * ofxVideoBufferPlayer::getPixels() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.getPixels();
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            return emptyFrame->getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.getPixels();
+            return image->getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
             return player.getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).getPixels();
+            return buffer->at(currentFrame)->getPixels();
             break;
         default:
             break;
@@ -70,17 +75,17 @@ unsigned char * ofxVideoBufferPlayer::getPixels() {
 ofPixelsRef ofxVideoBufferPlayer::getPixelsRef() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.getPixelsRef();
+            return emptyFrame->getPixelsRef();
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixelsRef() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.getPixelsRef();
+            return image->getPixelsRef();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
             return player.getPixelsRef();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).getPixelsRef();
+            return buffer->at(currentFrame)->getPixelsRef();
             break;
         default:
             break;
@@ -89,19 +94,25 @@ ofPixelsRef ofxVideoBufferPlayer::getPixelsRef() {
 
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::draw(float x,float y) {
+    if(isEmpty()) {
+        emptyFrame->draw(x,y);
+        return;
+    }
+    
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.draw(x,y);
+            emptyFrame->draw(x,y);
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::draw() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.draw(x,y);
+            image->draw(x,y);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.draw(x,y);
+            player.draw(x,y);
+            break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).draw(x,y);
+            buffer->at(currentFrame)->draw(x,y);
             break;
         default:
             break;
@@ -110,19 +121,24 @@ void ofxVideoBufferPlayer::draw(float x,float y) {
 
 //--------------------------------------------------------------
 void  ofxVideoBufferPlayer::draw(float x,float y,float w, float h) {
+    if(isEmpty()) {
+        emptyFrame->draw(x,y,w,y);
+        return;
+    }
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.draw(x,y,w,h);
+            emptyFrame->draw(x,y,w,h);
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::draw() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.draw(x,y,w,h);
+            image->draw(x,y,w,h);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.draw(x,y,w,h);
+            player.draw(x,y,w,h);
+            break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).draw(x,y,w,h);
+            buffer->at(currentFrame)->draw(x,y,w,h);
             break;
         default:
             break;
@@ -131,19 +147,23 @@ void  ofxVideoBufferPlayer::draw(float x,float y,float w, float h) {
 
 //--------------------------------------------------------------
 float ofxVideoBufferPlayer::getHeight() {
+    if(isEmpty()) {
+        return emptyFrame->getHeight();
+    }
+
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.getHeight();
+            return emptyFrame->getHeight();
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getHeight() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.getHeight();
+            return image->getHeight();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
             return player.getHeight();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).getHeight();
+            return buffer->at(currentFrame)->getHeight();
             break;
         default:
             break;
@@ -152,19 +172,23 @@ float ofxVideoBufferPlayer::getHeight() {
 
 //--------------------------------------------------------------
 float ofxVideoBufferPlayer::getWidth() {
+    if(isEmpty()) {
+        return emptyFrame->getWidth();
+    }
+
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            return emptyFrame.getWidth();
+            return emptyFrame->getWidth();
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getWidth() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.getWidth();
+            return image->getWidth();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
             return player.getWidth();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame).getWidth();
+            return buffer->at(currentFrame)->getWidth();
             break;
         default:
             break;
@@ -188,7 +212,7 @@ void  ofxVideoBufferPlayer::resetAnchor() {
 
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::loadImage(string filename) {
-    if(image.loadImage(filename)) {
+    if(image->loadImage(filename)) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE;
         player.play();
         player.setSpeed(0);
@@ -240,7 +264,7 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxVideoBuffer* _buffer) {
 }
 
 //--------------------------------------------------------------
-ofImage&  ofxVideoBufferPlayer::getImagePlayer() {
+ofxVideoFrame&  ofxVideoBufferPlayer::getImagePlayer() {
     return image;
 }
 
@@ -317,7 +341,7 @@ int ofxVideoBufferPlayer::getSize() {
 
 //--------------------------------------------------------------
 bool ofxVideoBufferPlayer::isFull() {
-    return (sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_NONE) || (getCount() != getSize());
+    return getSize() > getCount();
 }       
 
 //--------------------------------------------------------------
@@ -460,19 +484,23 @@ void ofxVideoBufferPlayer::update() {
 
 //--------------------------------------------------------------
 ofTexture& ofxVideoBufferPlayer::getTextureReference() {
+    if(isEmpty()) {
+        return emptyFrame->getTextureReference();
+    }
+
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            emptyFrame.getTextureReference();
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getTextureReference() - no source.");
+            return emptyFrame->getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.getTextureReference();
+            return image->getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
-            player.getTextureReference();
+            return player.getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            buffer->at(currentFrame).getTextureReference();
+            return buffer->at(currentFrame)->getTextureReference();
             break;
         default:
             break;
@@ -483,17 +511,17 @@ ofTexture& ofxVideoBufferPlayer::getTextureReference() {
 void ofxVideoBufferPlayer::setUseTexture(bool bUseTex) {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            emptyFrame.setUseTexture(bUseTex);
+            emptyFrame->setUseTexture(bUseTex);
             ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
-            return image.setUseTexture(bUseTex);
+            return image->setUseTexture(bUseTex);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             player.setUseTexture(bUseTex);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            buffer->at(currentFrame).setUseTexture(bUseTex);
+            buffer->at(currentFrame)->setUseTexture(bUseTex);
             break;
         default:
             break;

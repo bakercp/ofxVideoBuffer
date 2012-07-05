@@ -56,8 +56,8 @@ void ofxVideoBuffer::update(ofEventArgs & args) {
     if (loader.isComplete()) {
         // TODO, upload textures as soon as they are ready
         for(int i = 0; i < (int)buffer.size(); i++) {
-            buffer[i].setUseTexture(true);
-            buffer[i].update(); // load all pixels into opengl textures
+            buffer[i]->setUseTexture(true);
+            buffer[i]->update(); // load all pixels into opengl textures
         }
         count = getSize();//getSize() - 1;// set it to the last valid
         loader.reset();
@@ -85,18 +85,20 @@ bool  ofxVideoBuffer::isLoading() {
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
+
+//bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
+bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
     if(loader.isLoading()) { // no buffering while loading
         count = 0;
         return false;
     }
     
     if(isPassthroughBuffer()) {
-        buffer[0].setFromPixels(pixels); // the 0th frame is always the passthrough frame
+        buffer[0] = frame;//setFromPixels(pixels); // the 0th frame is always the passthrough frame
         return true;
     } else if(isFixedBuffer()) {
         if(count < getSize()) {
-            buffer[count].setFromPixels(pixels);
+            buffer[count] = frame;//->setFromPixels(pixels);
             count++;
             return true;
         } else {
@@ -105,19 +107,19 @@ bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
     } else if(isCircularBuffer()) {
         if(count < getSize()) {
             // still adding like a fixed buffer
-            buffer[count].setFromPixels(pixels);
+            buffer[count] = frame;//->setFromPixels(pixels);
             count++;
             return true;
         } else {
             // add a frame to the end
-            ofxVideoFrame newFrame;
-            newFrame.setFromPixels(pixels);
-            buffer.push_back(newFrame);
+            //ofxVideoFrame newFrame;
+            //newFrame->setFromPixels(pixels);
+            buffer.push_back(frame);
             
             // TODO: memory management here?  
             // TODO: ring buffer more efficient here?
             // erase the frame from the beginning
-            buffer.erase(buffer.begin()); // calls the destructor as long as the item is not a pointer
+            buffer.erase(buffer.begin()); // calls the destructor as on shared ptr
             return true;
         }
     } else {

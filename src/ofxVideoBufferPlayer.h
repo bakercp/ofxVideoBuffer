@@ -64,7 +64,7 @@ public:
     void loadMovie(string filename);
     void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
 
-    ofImage&        getImagePlayer();
+    ofxVideoFrame&  getImagePlayer();
     ofVideoPlayer&  getVideoPlayer();   // get the internal video player
     ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
     
@@ -134,7 +134,7 @@ protected:
 
     ofxVideoFrame  emptyFrame;      // the empty frame
     
-    ofImage         image;
+    ofxVideoFrame   image;
     ofxVideoBuffer* buffer;         // the pointer to the current video buffer 
     ofVideoPlayer   player;         // the pointer to the current video player 
                                     // if the player is playing from disk, it must
@@ -170,4 +170,3 @@ protected:
     float   frameToFrameNorm(int   frame);
     
 };
-

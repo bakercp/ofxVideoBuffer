@@ -36,8 +36,10 @@ public:
 	void  loadMovie(string _filename, int _startFrame, int _endFrame); // "
     bool  isLoading();             // checks to see if the video is loading
     
-    bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
-
+    //bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
+    bool bufferFrame(const ofxVideoFrame& frame);
+    
+    
     ofxVideoFrame& operator [](int i);  // frames are accessed via the [] operator
     ofxVideoFrame& at(int i);           // 
     
@@ -70,6 +72,27 @@ public:
     float getFrameRate();
     void  setFrameRate(float frameRate);
     
+    string toString() {
+        stringstream ss;
+        ss << "ofxVideoBuffer:" << endl;
+        if(isFixedBuffer()) {
+            ss << "\tTYPE=FIXED" << endl;
+        } else if(isPassthroughBuffer()) {
+            ss << "\tTYPE=PASSTHROUGH" << endl;
+        } else if(isCircularBuffer()) {
+            ss << "\tTYPE=CIRCULAR" << endl;
+        }
+        ss << "\tFrameRate="<< getFrameRate() << endl;
+        ss << "\t%Full="<< getPercentFull() << endl;
+        ss << "\tSize="<< getSize() << endl;
+        ss << "\tCount="<< getCount() << endl;
+        ss << "\tFrameRate="<< getFrameRate() << endl;
+        ss << "\tIsLoading="<< isLoading() << endl;
+        
+        return ss.str();
+        
+        
+    }
 
 protected:
     int                  count;  // the count is the number of "valid" frames in the buffer

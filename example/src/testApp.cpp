@@ -139,12 +139,17 @@ void testApp::draw(){
     ofDrawBitmapString(keys,20,400);
     
     if(isRecording) {
+        
+        ofxVideoFrame frame = ofxVideoFrame(new ofImage());
+        frame->setFromPixels(vidGrabber.getPixelsRef());
+//        vidIpCam.getPixelsRef()
+        
         if(currentVideoSource == 0 && vidGrabber.isFrameNew()) {
-            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidGrabber.getPixelsRef());
+            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 1 ) {//&& vidIpCam.isFrameNew()) { // TODO
-            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidIpCam.getPixelsRef());
+            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 2 && vidPlayer.isFrameNew() ) {
-            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(vidPlayer.getPixelsRef());
+            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         }
     }
     
