@@ -3,7 +3,7 @@ ofxVideoBuffer
 
 A multi-tap video buffer / delay line with asynchronous video loading.
 
-Requres the demo requires: 
+The demo requires: 
 
 ofxIpVideoGrabber https://github.com/bakercp/ofxIpVideoGrabber 
 
