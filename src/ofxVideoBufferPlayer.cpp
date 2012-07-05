@@ -269,7 +269,7 @@ ofxVideoFrame&  ofxVideoBufferPlayer::getImagePlayer() {
 }
 
 //--------------------------------------------------------------
-ofVideoPlayer&  ofxVideoBufferPlayer::getVideoPlayer() {
+ofxVideoPlayer&  ofxVideoBufferPlayer::getVideoPlayer() {
     return player;
 }
 

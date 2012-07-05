@@ -6,6 +6,7 @@
 #include "ofMain.h"
 //#include "ofxVideoBufferTypes.h"
 #include "ofxVideoBuffer.h"
+#include "ofxVideoPlayer.h"
 
 // TODO:
 // video loop event
@@ -65,7 +66,7 @@ public:
     void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
 
     ofxVideoFrame&  getImagePlayer();
-    ofVideoPlayer&  getVideoPlayer();   // get the internal video player
+    ofxVideoPlayer& getVideoPlayer();   // get the internal video player
     ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
     
     bool    isImagePlayer();
@@ -136,7 +137,7 @@ protected:
     
     ofxVideoFrame   image;
     ofxVideoBuffer* buffer;         // the pointer to the current video buffer 
-    ofVideoPlayer   player;         // the pointer to the current video player 
+    ofxVideoPlayer  player;         // the pointer to the current video player 
                                     // if the player is playing from disk, it must
                                     // own its own ofVideoPlayer.  ofVideoPlayer does
                                     // not take kindly to multi-tap frames.

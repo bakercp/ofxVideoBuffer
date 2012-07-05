@@ -91,6 +91,8 @@
 		FD480F2B155F02AF00660A6F /* ofxVideoBufferPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxVideoBufferPlayer.cpp; path = ../src/ofxVideoBufferPlayer.cpp; sourceTree = "<group>"; };
 		FD480F2C155F02AF00660A6F /* ofxVideoBufferPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoBufferPlayer.h; path = ../src/ofxVideoBufferPlayer.h; sourceTree = "<group>"; };
 		FD480F2D155F02AF00660A6F /* ofxVideoBufferTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoBufferTypes.h; path = ../src/ofxVideoBufferTypes.h; sourceTree = "<group>"; };
+		FD8DEABA15A611EB00AD0DE3 /* ofxVideoPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxVideoPlayer.h; path = ../src/ofxVideoPlayer.h; sourceTree = "<group>"; };
+		FD8DEABD15A615D000AD0DE3 /* ofxVideoGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoGrabber.h; path = ../src/ofxVideoGrabber.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +241,8 @@
 				FD480F2B155F02AF00660A6F /* ofxVideoBufferPlayer.cpp */,
 				FD480F2C155F02AF00660A6F /* ofxVideoBufferPlayer.h */,
 				FD480F2D155F02AF00660A6F /* ofxVideoBufferTypes.h */,
+				FD8DEABA15A611EB00AD0DE3 /* ofxVideoPlayer.h */,
+				FD8DEABD15A615D000AD0DE3 /* ofxVideoGrabber.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
