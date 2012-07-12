@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxVideoBufferTypes.h"
+#include "ofxVideoFrame.h"
+#include "ofxVideoPlayer.h"
+#include "ofxVideoBufferData.h"
 
 enum ofxVideoBufferLoaderState {
     OFX_VID_BUFFER_IDLE     = 0,
@@ -10,8 +12,9 @@ enum ofxVideoBufferLoaderState {
 };
 
 enum ofxVideoBufferLoadType {
-    OFX_VID_BUFFER_LOAD_IMAGE = 0,
-    OFX_VID_BUFFER_LOAD_VIDEO = 1,
+    OFX_VID_BUFFER_LOAD_VIDEO = 0,
+    OFX_VID_BUFFER_LOAD_IMAGE = 1,
+//    OFX_VID_BUFFER_LOAD_IMAGE_SEQUENCE = 2,
 };
 
 class ofxVideoBufferLoader : protected ofThread {
@@ -48,7 +51,7 @@ protected:
     int endFrame;
     
 	ofxVideoBufferData* buffer;
-	ofVideoPlayer player;
+	ofxVideoPlayer player;
     ofxVideoFrame image;
     
     // thread functions

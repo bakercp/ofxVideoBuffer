@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxVideoFrame.h"
 
-typedef ofPtr<ofImage>       ofxVideoFrame;
 typedef deque< ofxVideoFrame > ofxVideoBufferData;
 
