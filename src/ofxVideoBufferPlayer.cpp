@@ -720,7 +720,7 @@ string ofxVideoBufferPlayer::toString() {
         stats+= "Video Player";
     } else if(isBufferPlayer()) {
         // cout << "IN HERE BUFFER PLAYER!! > source type == " << sourceType << endl;
-        ofVideoBufferType type = getVideoBuffer()->getBufferType();
+        ofxVideoBufferType type = getVideoBuffer()->getBufferType();
         if(type == OFX_VIDEO_BUFFER_FIXED) {
             stats+="FIXED";
         } else if(type == OFX_VIDEO_BUFFER_CIRCULAR) {

@@ -17,38 +17,41 @@ ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
 
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer() {
+    readOnly = false;
     frameRate = 0.0f;
     count = 0;
     mode    = OFX_VIDEO_BUFFER_FIXED;
     buffer.resize(1, ofxVideoFrame()); // resize buffer
     // connect to the update event listener
-    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+//    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
 
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(int _size) {
+    readOnly = false;
     frameRate = 0.0f;
     count = 0;
     mode    = OFX_VIDEO_BUFFER_FIXED;
     buffer.resize(_size, ofxVideoFrame()); // resize buffer
     // connect to the update event listener
-    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+//    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
 
 //--------------------------------------------------------------
-ofxVideoBuffer::ofxVideoBuffer(int _size, ofVideoBufferType _type) {
+ofxVideoBuffer::ofxVideoBuffer(int _size, ofxVideoBufferType _type) {
+    readOnly = false;
     frameRate = 0.0f;
     count = 0;
     mode    = _type;
     buffer.resize(_size, ofxVideoFrame()); // resize buffer
     // connect to the update event listener
-    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+//    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
 
 //--------------------------------------------------------------
 ofxVideoBuffer::~ofxVideoBuffer() {
     // disconnect from the update event listener
-    ofRemoveListener(ofEvents().update,this,&ofxVideoBuffer::update);
+//    ofRemoveListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }    
 
 //--------------------------------------------------------------
@@ -85,9 +88,11 @@ bool  ofxVideoBuffer::isLoading() {
 }
 
 //--------------------------------------------------------------
-
-//bool ofxVideoBuffer::bufferFrame(const ofPixels& pixels) {
 bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
+    if(readOnly) {
+        return false;
+    }
+    
     if(loader.isLoading()) { // no buffering while loading
         count = 0;
         return false;
@@ -128,12 +133,12 @@ bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
 }
 
 //--------------------------------------------------------------
-ofxVideoFrame& ofxVideoBuffer::operator [](int i) {
+ofxVideoFrame ofxVideoBuffer::operator [](int i) const {
     return at(i);
 }
 
 //--------------------------------------------------------------
-ofxVideoFrame& ofxVideoBuffer::at(int i) {
+ofxVideoFrame ofxVideoBuffer::at(int i) const {
     if(isPassthroughBuffer() || isEmpty()) return buffer[0]; // TODO?
 
     // super modulo
@@ -162,7 +167,7 @@ void ofxVideoBuffer::clear() {
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBuffer::isEmpty() {
+bool ofxVideoBuffer::isEmpty() const {
     return count == 0;
 }
 
@@ -185,13 +190,13 @@ bool ofxVideoBuffer::setSize(int _size) {
 }
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::setBufferType(ofVideoBufferType _mode) {
+void ofxVideoBuffer::setBufferType(ofxVideoBufferType _mode) {
     mode = _mode;
     // TODO : anything else here?
 }
 
 //--------------------------------------------------------------
-ofVideoBufferType ofxVideoBuffer::getBufferType() const {
+ofxVideoBufferType ofxVideoBuffer::getBufferType() const {
     return mode;
 }
 
@@ -222,6 +227,21 @@ float ofxVideoBuffer::getFrameRate() {
 //--------------------------------------------------------------
 void  ofxVideoBuffer::setFrameRate(float _frameRate) {
     frameRate = _frameRate;
+}
+
+//--------------------------------------------------------------
+bool ofxVideoBuffer::isReadOnly() {
+    return readOnly;
+}
+
+//--------------------------------------------------------------
+bool ofxVideoBuffer::isWritable() {
+    return !readOnly;
+}
+
+//--------------------------------------------------------------
+void ofxVideoBuffer::setReadOnly(bool _readOnly) {
+    readOnly = _readOnly;
 }
 
 

@@ -10,11 +10,12 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxVideoBufferTypes.h"
+#include "ofxVideoFrame.h"
+#include "ofxVideoBufferData.h"
 #include "ofxVideoBufferLoader.h"
 
 // buffer types
-enum ofVideoBufferType {
+enum ofxVideoBufferType {
     OFX_VIDEO_BUFFER_FIXED,
     OFX_VIDEO_BUFFER_CIRCULAR,
     OFX_VIDEO_BUFFER_PASSTHROUGH,
@@ -23,10 +24,9 @@ enum ofVideoBufferType {
 class ofxVideoBuffer {
 public:
     // a buffer always has at least one frame
-    
     ofxVideoBuffer();
     ofxVideoBuffer(int _bufferSize); 
-    ofxVideoBuffer(int _bufferSize, ofVideoBufferType _type);
+    ofxVideoBuffer(int _bufferSize, ofxVideoBufferType _type);
     virtual ~ofxVideoBuffer();    
 
     void  update(ofEventArgs & args);  // notify in update so the notification is thread safe
@@ -39,12 +39,11 @@ public:
     //bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
     bool bufferFrame(const ofxVideoFrame& frame);
     
-    
-    ofxVideoFrame& operator [](int i);  // frames are accessed via the [] operator
-    ofxVideoFrame& at(int i);           // 
+    ofxVideoFrame operator [](int i) const;  // frames are accessed via the [] operator
+    ofxVideoFrame at(int i) const;           // 
     
     void  clear();  // resets the count.  does not clear or resize the underlying buffer
-    bool  isEmpty(); // is the count == 0?
+    bool  isEmpty() const; // is the count == 0?
     
     // counts and sizes
     int   getCount() const; // the number of valid frames i.e. (head + 1)
@@ -56,8 +55,8 @@ public:
     float getPercentFull() const; // how full is the buffer
     
     // buffer modes
-    void setBufferType(ofVideoBufferType type);
-    ofVideoBufferType getBufferType() const;
+    void setBufferType(ofxVideoBufferType type);
+    ofxVideoBufferType getBufferType() const;
 
     bool isFixedBuffer() const;        // the normal buffer mode (i.e. fixed size)
     bool isPassthroughBuffer() const;   // a passthrough buffer
@@ -71,6 +70,11 @@ public:
 
     float getFrameRate();
     void  setFrameRate(float frameRate);
+    
+    bool  isReadOnly();
+    bool  isWritable();
+    void  setReadOnly(bool readOnly);
+    
     
     string toString() {
         stringstream ss;
@@ -88,6 +92,7 @@ public:
         ss << "\tCount="<< getCount() << endl;
         ss << "\tFrameRate="<< getFrameRate() << endl;
         ss << "\tIsLoading="<< isLoading() << endl;
+        ss << "\tIsReadOnly="<< isReadOnly() << endl;
         
         return ss.str();
         
@@ -95,8 +100,10 @@ public:
     }
 
 protected:
+    bool                 readOnly; // just a loose flag for preventing writes
+    
     int                  count;  // the count is the number of "valid" frames in the buffer
-    ofVideoBufferType    mode;   // the buffer mode (circular, etc)
+    ofxVideoBufferType   mode;   // the buffer mode (circular, etc)
     ofxVideoBufferData   buffer; // frames are stored in this buffer
     
     

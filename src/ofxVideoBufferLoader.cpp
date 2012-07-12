@@ -26,10 +26,7 @@ void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, string _filena
     } else {
         reset();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferLoader::loadImage() - image load error.");
-    }
-    
-    
-    
+    }    
 }
 
 //--------------------------------------------------------------
@@ -58,8 +55,6 @@ void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer,
         reset();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferLoader::loadMovie() - image load error.");
     }
-
-    
 }
 
 //--------------------------------------------------------------
