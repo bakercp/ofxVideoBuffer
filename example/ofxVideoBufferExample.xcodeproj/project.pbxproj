@@ -28,6 +28,8 @@
 		FD480F2E155F02AF00660A6F /* ofxVideoBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD480F27155F02AF00660A6F /* ofxVideoBuffer.cpp */; };
 		FD480F2F155F02AF00660A6F /* ofxVideoBufferLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD480F29155F02AF00660A6F /* ofxVideoBufferLoader.cpp */; };
 		FD480F30155F02AF00660A6F /* ofxVideoBufferPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD480F2B155F02AF00660A6F /* ofxVideoBufferPlayer.cpp */; };
+		FD8DEB1F15A6487000AD0DE3 /* ofxBaseVideoSink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD8DEB1815A6487000AD0DE3 /* ofxBaseVideoSink.cpp */; };
+		FD8DEB2015A6487000AD0DE3 /* ofxBaseVideoSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD8DEB1A15A6487000AD0DE3 /* ofxBaseVideoSource.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,9 +92,13 @@
 		FD480F2A155F02AF00660A6F /* ofxVideoBufferLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoBufferLoader.h; path = ../src/ofxVideoBufferLoader.h; sourceTree = "<group>"; };
 		FD480F2B155F02AF00660A6F /* ofxVideoBufferPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxVideoBufferPlayer.cpp; path = ../src/ofxVideoBufferPlayer.cpp; sourceTree = "<group>"; };
 		FD480F2C155F02AF00660A6F /* ofxVideoBufferPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoBufferPlayer.h; path = ../src/ofxVideoBufferPlayer.h; sourceTree = "<group>"; };
-		FD480F2D155F02AF00660A6F /* ofxVideoBufferTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoBufferTypes.h; path = ../src/ofxVideoBufferTypes.h; sourceTree = "<group>"; };
-		FD8DEABA15A611EB00AD0DE3 /* ofxVideoPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxVideoPlayer.h; path = ../src/ofxVideoPlayer.h; sourceTree = "<group>"; };
-		FD8DEABD15A615D000AD0DE3 /* ofxVideoGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ofxVideoGrabber.h; path = ../src/ofxVideoGrabber.h; sourceTree = "<group>"; };
+		FD8DEB1815A6487000AD0DE3 /* ofxBaseVideoSink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseVideoSink.cpp; sourceTree = "<group>"; };
+		FD8DEB1915A6487000AD0DE3 /* ofxBaseVideoSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseVideoSink.h; sourceTree = "<group>"; };
+		FD8DEB1A15A6487000AD0DE3 /* ofxBaseVideoSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseVideoSource.cpp; sourceTree = "<group>"; };
+		FD8DEB1B15A6487000AD0DE3 /* ofxBaseVideoSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxBaseVideoSource.h; sourceTree = "<group>"; };
+		FD8DEB1C15A6487000AD0DE3 /* ofxVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoFrame.h; sourceTree = "<group>"; };
+		FD8DEB1D15A6487000AD0DE3 /* ofxVideoGrabber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoGrabber.h; sourceTree = "<group>"; };
+		FD8DEB1E15A6487000AD0DE3 /* ofxVideoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoPlayer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +129,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				FD8DEB1415A6487000AD0DE3 /* ofxVideoUtils */,
 				FD480F25155F029D00660A6F /* ofxVideoBuffer */,
 				FD480F04155F029500660A6F /* ofxIpVideoGrabber */,
 			);
@@ -240,11 +247,31 @@
 				FD480F2A155F02AF00660A6F /* ofxVideoBufferLoader.h */,
 				FD480F2B155F02AF00660A6F /* ofxVideoBufferPlayer.cpp */,
 				FD480F2C155F02AF00660A6F /* ofxVideoBufferPlayer.h */,
-				FD480F2D155F02AF00660A6F /* ofxVideoBufferTypes.h */,
-				FD8DEABA15A611EB00AD0DE3 /* ofxVideoPlayer.h */,
-				FD8DEABD15A615D000AD0DE3 /* ofxVideoGrabber.h */,
 			);
 			name = src;
+			sourceTree = "<group>";
+		};
+		FD8DEB1415A6487000AD0DE3 /* ofxVideoUtils */ = {
+			isa = PBXGroup;
+			children = (
+				FD8DEB1715A6487000AD0DE3 /* src */,
+			);
+			name = ofxVideoUtils;
+			path = ../../ofxVideoUtils;
+			sourceTree = "<group>";
+		};
+		FD8DEB1715A6487000AD0DE3 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				FD8DEB1815A6487000AD0DE3 /* ofxBaseVideoSink.cpp */,
+				FD8DEB1915A6487000AD0DE3 /* ofxBaseVideoSink.h */,
+				FD8DEB1A15A6487000AD0DE3 /* ofxBaseVideoSource.cpp */,
+				FD8DEB1B15A6487000AD0DE3 /* ofxBaseVideoSource.h */,
+				FD8DEB1C15A6487000AD0DE3 /* ofxVideoFrame.h */,
+				FD8DEB1D15A6487000AD0DE3 /* ofxVideoGrabber.h */,
+				FD8DEB1E15A6487000AD0DE3 /* ofxVideoPlayer.h */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +364,8 @@
 				FD480F2E155F02AF00660A6F /* ofxVideoBuffer.cpp in Sources */,
 				FD480F2F155F02AF00660A6F /* ofxVideoBufferLoader.cpp in Sources */,
 				FD480F30155F02AF00660A6F /* ofxVideoBufferPlayer.cpp in Sources */,
+				FD8DEB1F15A6487000AD0DE3 /* ofxBaseVideoSink.cpp in Sources */,
+				FD8DEB2015A6487000AD0DE3 /* ofxBaseVideoSource.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
