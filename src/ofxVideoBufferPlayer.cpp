@@ -28,10 +28,10 @@
 
 //--------------------------------------------------------------
 ofxVideoBufferPlayer::ofxVideoBufferPlayer() {
-    emptyFrame = ofxVideoFrame(new ofImage());
+    emptyFrame = ofxSharedVideoFrame(new ofImage());
     emptyFrame->allocate(1,1,OF_IMAGE_COLOR);
     
-    image      = ofxVideoFrame(new ofImage());
+    image      = ofxSharedVideoFrame(new ofImage());
     image->allocate(1,1,OF_IMAGE_COLOR);
     
     
@@ -288,7 +288,7 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxVideoBuffer* _buffer) {
 }
 
 //--------------------------------------------------------------
-ofxVideoFrame&  ofxVideoBufferPlayer::getImagePlayer() {
+ofxSharedVideoFrame&  ofxVideoBufferPlayer::getImagePlayer() {
     return image;
 }
 

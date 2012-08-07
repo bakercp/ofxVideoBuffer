@@ -44,7 +44,7 @@ ofxVideoBuffer::ofxVideoBuffer() {
     frameRate = 0.0f;
     count = 0;
     mode    = OFX_VIDEO_BUFFER_FIXED;
-    buffer.resize(1, ofxVideoFrame()); // resize buffer
+    buffer.resize(1, ofxSharedVideoFrame()); // resize buffer
     // connect to the update event listener
 //    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
@@ -55,7 +55,7 @@ ofxVideoBuffer::ofxVideoBuffer(int _size) {
     frameRate = 0.0f;
     count = 0;
     mode    = OFX_VIDEO_BUFFER_FIXED;
-    buffer.resize(_size, ofxVideoFrame()); // resize buffer
+    buffer.resize(_size, ofxSharedVideoFrame()); // resize buffer
     // connect to the update event listener
 //    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
@@ -66,20 +66,27 @@ ofxVideoBuffer::ofxVideoBuffer(int _size, ofxVideoBufferType _type) {
     frameRate = 0.0f;
     count = 0;
     mode    = _type;
-    buffer.resize(_size, ofxVideoFrame()); // resize buffer
+    buffer.resize(_size, ofxSharedVideoFrame()); // resize buffer
     // connect to the update event listener
-//    ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
+    //ofAddListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }
 
 //--------------------------------------------------------------
 ofxVideoBuffer::~ofxVideoBuffer() {
     // disconnect from the update event listener
-//    ofRemoveListener(ofEvents().update,this,&ofxVideoBuffer::update);
+    //ofRemoveListener(ofEvents().update,this,&ofxVideoBuffer::update);
 }    
 
 //--------------------------------------------------------------
 void ofxVideoBuffer::update(ofEventArgs & args) {
+    update();
+}
+    
+//--------------------------------------------------------------
+void ofxVideoBuffer::update() {
+        
     if (loader.isComplete()) {
+        ofLog(OF_LOG_NOTICE,"ofxVideoBuffer::update - loader complete."); 
         // TODO, upload textures as soon as they are ready
         for(int i = 0; i < (int)buffer.size(); i++) {
             buffer[i]->setUseTexture(true);
@@ -87,8 +94,10 @@ void ofxVideoBuffer::update(ofEventArgs & args) {
         }
         count = getSize();//getSize() - 1;// set it to the last valid
         loader.reset();
+        setReadOnly(true); // lock it.
     } 
 }
+
 
 //--------------------------------------------------------------
 void ofxVideoBuffer::loadImage(string _filename) {
@@ -111,7 +120,7 @@ bool  ofxVideoBuffer::isLoading() {
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
+bool ofxVideoBuffer::bufferFrame(const ofxSharedVideoFrame& frame) {
     if(readOnly) {
         return false;
     }
@@ -140,7 +149,7 @@ bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
             return true;
         } else {
             // add a frame to the end
-            //ofxVideoFrame newFrame;
+            //ofxSharedVideoFrame newFrame;
             //newFrame->setFromPixels(pixels);
             buffer.push_back(frame);
             
@@ -156,12 +165,12 @@ bool ofxVideoBuffer::bufferFrame(const ofxVideoFrame& frame) {
 }
 
 //--------------------------------------------------------------
-ofxVideoFrame ofxVideoBuffer::operator [](int i) const {
+ofxSharedVideoFrame ofxVideoBuffer::operator [](int i) const {
     return at(i);
 }
 
 //--------------------------------------------------------------
-ofxVideoFrame ofxVideoBuffer::at(int i) const {
+ofxSharedVideoFrame ofxVideoBuffer::at(int i) const {
     if(isPassthroughBuffer() || isEmpty()) return buffer[0]; // TODO?
 
     // super modulo
@@ -204,7 +213,7 @@ bool ofxVideoBuffer::setSize(int _size) {
     // TODO: memory -- are destructors called?
     if(_size > 0 && _size != getSize()) {
         if(_size < getSize()) count = MIN(count,_size); // move head back
-        buffer.resize(_size, ofxVideoFrame()); // resize buffer
+        buffer.resize(_size, ofxSharedVideoFrame()); // resize buffer
         return true;
     } else {
         // no change

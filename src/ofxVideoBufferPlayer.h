@@ -48,7 +48,7 @@ public:
 
     //////////////////////////////////////////////////
     // Frame Access //////////////////////////////////
-    ofxVideoFrame& getCurrentFrame(); // retrieve a reference to the current frame
+    ofxSharedVideoFrame& getCurrentFrame(); // retrieve a reference to the current frame
 
     //////////////////////////////////////////////////
     // ofBaseVideo ///////////////////////////////////
@@ -86,7 +86,7 @@ public:
     void loadMovie(string filename);
     void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
 
-    ofxVideoFrame&  getImagePlayer();
+    ofxSharedVideoFrame&  getImagePlayer();
     ofxVideoPlayer& getVideoPlayer();   // get the internal video player
     ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
     
@@ -154,9 +154,9 @@ public:
     
 protected:
 
-    ofxVideoFrame  emptyFrame;      // the empty frame
+    ofxSharedVideoFrame  emptyFrame;      // the empty frame
     
-    ofxVideoFrame   image;
+    ofxSharedVideoFrame   image;
     ofxVideoBuffer* buffer;         // the pointer to the current video buffer 
     ofxVideoPlayer  player;         // the pointer to the current video player 
                                     // if the player is playing from disk, it must

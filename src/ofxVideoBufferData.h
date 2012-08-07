@@ -27,5 +27,5 @@
 #include "ofMain.h"
 #include "ofxVideoFrame.h"
 
-typedef deque< ofxVideoFrame > ofxVideoBufferData;
+typedef deque< ofxSharedVideoFrame > ofxVideoBufferData;
 

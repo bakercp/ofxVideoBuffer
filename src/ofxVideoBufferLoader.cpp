@@ -35,7 +35,7 @@ ofxVideoBufferLoader::~ofxVideoBufferLoader() {}
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, string _filename) {
     
-    image = ofPtr<ofImage>(new ofImage());
+    image = ofxSharedVideoFrame(new ofxVideoFrame());
     
     if(image->loadImage(_filename)) {
         loadType = OFX_VID_BUFFER_LOAD_IMAGE;
@@ -130,7 +130,7 @@ void ofxVideoBufferLoader::threadedFunction(){
     } else if(loadType == OFX_VID_BUFFER_LOAD_VIDEO) {
         while (currentFrame <= endFrame) {
             if( lock() ){
-                ofxVideoFrame frame = ofPtr<ofImage>(new ofImage());
+                ofxSharedVideoFrame frame = ofxSharedVideoFrame(new ofxVideoFrame());
                 frame->setUseTexture(false);
                 // TODO: there are strange sitatuations with set frame.
                 // setFrame(0) is equal to setFrame(1) in most cases.

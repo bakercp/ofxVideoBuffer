@@ -45,6 +45,7 @@ public:
     virtual ~ofxVideoBuffer();    
 
     void  update(ofEventArgs & args);  // notify in update so the notification is thread safe
+    void  update();
     
     void  loadImage(string _filename);
     void  loadMovie(string _filename);  // this will load a video into the buffer in another thread
@@ -52,10 +53,10 @@ public:
     bool  isLoading();             // checks to see if the video is loading
     
     //bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
-    bool bufferFrame(const ofxVideoFrame& frame);
+    bool bufferFrame(const ofxSharedVideoFrame& frame);
     
-    ofxVideoFrame operator [](int i) const;  // frames are accessed via the [] operator
-    ofxVideoFrame at(int i) const;           // 
+    ofxSharedVideoFrame operator [](int i) const;  // frames are accessed via the [] operator
+    ofxSharedVideoFrame at(int i) const;           // 
     
     void  clear();  // resets the count.  does not clear or resize the underlying buffer
     bool  isEmpty() const; // is the count == 0?
@@ -127,7 +128,7 @@ protected:
                                  // this class checks on that loader and uploads the 
                                  // pixels to textures from the main thread.
     
-    bool    bUseTexture;
+    bool bUseTexture;
     
     float frameRate;
 };

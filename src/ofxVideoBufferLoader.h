@@ -76,7 +76,7 @@ protected:
     
 	ofxVideoBufferData* buffer;
 	ofxVideoPlayer player;
-    ofxVideoFrame image;
+    ofxSharedVideoFrame image;
     
     // thread functions
     void threadedFunction();
