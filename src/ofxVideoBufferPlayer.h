@@ -82,25 +82,25 @@ public:
     
     //////////////////////////////////////////////////
     // Source ////////////////////////////////////////
-    void loadImage(string filename);
-    void loadMovie(string filename);
+    void loadImage(const string& filename);
+    void loadMovie(const string& filename);
     void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
 
     ofxSharedVideoFrame&  getImagePlayer();
     ofxVideoPlayer& getVideoPlayer();   // get the internal video player
     ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
     
-    bool    isImagePlayer();
-    bool    isVideoPlayer();
-    bool    isBufferPlayer();
+    bool    isImagePlayer() const;
+    bool    isVideoPlayer() const;
+    bool    isBufferPlayer() const;
     
-    bool    isLoaded();           // checks for a NULL buffer
-    bool    isEmpty();            // is the internal buffer's count == 0
+    bool    isLoaded() const;           // checks for a NULL buffer
+    bool    isEmpty() /*const of is not const correct */;            // is the internal buffer's count == 0
 
-    int     getCount();
-    int     getSize();        
-    bool    isFull();         
-    float   getPctFull();
+    int     getCount() /*const of is not const correct */;
+    int     getSize() /*const of is not const correct */;
+    bool    isFull() /*const of is not const correct */;
+    float   getPctFull() /*const of is not const correct */;
 
     //////////////////////////////////////////////////
     // Looping ///////////////////////////////////////
@@ -112,23 +112,23 @@ public:
     void setLoopPointStartNorm(float framen);
     void setLoopPointEndNorm(float framen);
     
-	int getLoopPointStart();
-    int getLoopPointEnd();
+	int getLoopPointStart() /*const of is not const correct */;
+    int getLoopPointEnd() /*const of is not const correct */;
 
-    float getLoopPointStartNorm();
-    float getLoopPointEndNorm();
+    float getLoopPointStartNorm() /*const of is not const correct */;
+    float getLoopPointEndNorm() /*const of is not const correct */;
 
     void clearLoopPoints();
     
     void setLoopType(ofLoopType _loopType);
-	ofLoopType getLoopType();
+	ofLoopType getLoopType() const;
     
     //////////////////////////////////////////////////
     // Positioning ///////////////////////////////////
     void  setFrame(int frame);
     void  setFrameNorm(float framen);
-    int   getFrame();
-    float getFrameNorm();
+    int   getFrame() const;
+    float getFrameNorm() /*const of is not const correct */;
     
     //////////////////////////////////////////////////
     // Playback //////////////////////////////////////
@@ -143,13 +143,13 @@ public:
     void  setSpeed(float speed);
     float getSpeed();
     
-    float getFrameRate(); 
-    float getFrameDuration();
+    float getFrameRate() const;
+    float getFrameDuration() /*const of is not const correct */;
 
     //////////////////////////////////////////////////
     // Utility ///////////////////////////////////////
     
-    string toString();
+    string toString() /*const of is not const correct */;
     
     
 protected:
@@ -188,7 +188,7 @@ protected:
 	
     int bufferMod(int frame);
     
-    int     frameNormToFrame(float n);
-    float   frameToFrameNorm(int   frame);
+    int     frameNormToFrame(float n) /*const of is not const correct */;
+    float   frameToFrameNorm(int   frame) /*const of is not const correct */;
     
 };

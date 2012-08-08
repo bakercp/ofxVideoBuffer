@@ -235,7 +235,7 @@ void  ofxVideoBufferPlayer::resetAnchor() {
 }
 
 //--------------------------------------------------------------
-void ofxVideoBufferPlayer::loadImage(string filename) {
+void ofxVideoBufferPlayer::loadImage(const string& filename) {
     if(image->loadImage(filename)) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE;
         player.play();
@@ -253,7 +253,7 @@ void ofxVideoBufferPlayer::loadImage(string filename) {
 }
 
 //--------------------------------------------------------------
-void ofxVideoBufferPlayer::loadMovie(string filename) {
+void ofxVideoBufferPlayer::loadMovie(const string& filename) {
     if(player.loadMovie(filename)) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER;
         player.play();
@@ -303,33 +303,33 @@ ofxVideoBuffer* ofxVideoBufferPlayer::getVideoBuffer() {
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isImagePlayer() {
+bool ofxVideoBufferPlayer::isImagePlayer() const {
     return sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE;
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isVideoPlayer() {
+bool ofxVideoBufferPlayer::isVideoPlayer() const {
     return sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER;
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isBufferPlayer() {
+bool ofxVideoBufferPlayer::isBufferPlayer() const {
     return sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
 }
 
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isLoaded() {
+bool ofxVideoBufferPlayer::isLoaded() const {
     return sourceType != OFX_VIDEO_PLAYER_SRC_TYPE_NONE;
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isEmpty() {
+bool ofxVideoBufferPlayer::isEmpty() /*const of is not const correct */ {
     return getCount() < 1;
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::getCount() {
+int ofxVideoBufferPlayer::getCount() /*const of is not const correct */ {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return 1;
@@ -347,7 +347,7 @@ int ofxVideoBufferPlayer::getCount() {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::getSize() {
+int ofxVideoBufferPlayer::getSize() /*const of is not const correct */ {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return 1;
@@ -364,12 +364,12 @@ int ofxVideoBufferPlayer::getSize() {
 }      
 
 //--------------------------------------------------------------
-bool ofxVideoBufferPlayer::isFull() {
+bool ofxVideoBufferPlayer::isFull() /*const of is not const correct */ {
     return getSize() > getCount();
 }       
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getPctFull() {
+float ofxVideoBufferPlayer::getPctFull() /*const of is not const correct */ {
     if(sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_NONE) {
         return 0;
     } else {
@@ -570,12 +570,12 @@ void ofxVideoBufferPlayer::setLoopPointEnd(int frame) {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::getLoopPointStart() {
+int ofxVideoBufferPlayer::getLoopPointStart() /*const of is not const correct */ {
     return loopPointsStart;
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::getLoopPointEnd() {
+int ofxVideoBufferPlayer::getLoopPointEnd() /*const of is not const correct */ {
     return loopPointsEnd;
 }
 
@@ -597,12 +597,12 @@ void ofxVideoBufferPlayer::setLoopPointEndNorm(float frame) {
 
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getLoopPointStartNorm() {
+float ofxVideoBufferPlayer::getLoopPointStartNorm() /*const of is not const correct */ {
     return frameToFrameNorm(getLoopPointStart());
 }
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getLoopPointEndNorm() {
+float ofxVideoBufferPlayer::getLoopPointEndNorm() /*const of is not const correct */ {
     return frameToFrameNorm(getLoopPointEnd());
 }
 
@@ -626,7 +626,7 @@ void ofxVideoBufferPlayer::setLoopType(ofLoopType _loopType) {
 }
 
 //--------------------------------------------------------------
-ofLoopType ofxVideoBufferPlayer::getLoopType() {
+ofLoopType ofxVideoBufferPlayer::getLoopType() const {
     return loopType;
 }
 
@@ -656,12 +656,12 @@ void ofxVideoBufferPlayer::setFrameNorm(float n) {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::getFrame() {
+int ofxVideoBufferPlayer::getFrame() const {
     return currentFrame;
 }
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getFrameNorm() {
+float ofxVideoBufferPlayer::getFrameNorm() /*const of is not const correct */ {
     return frameToFrameNorm(currentFrame);
 }
 
@@ -702,7 +702,7 @@ float ofxVideoBufferPlayer::getSpeed() {
 
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getFrameRate() {
+float ofxVideoBufferPlayer::getFrameRate() const {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             return 0.0f;
@@ -723,12 +723,12 @@ float ofxVideoBufferPlayer::getFrameRate() {
 }
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::getFrameDuration() {
+float ofxVideoBufferPlayer::getFrameDuration() /*const of is not const correct */ {
     return 1.0f / (getFrameRate() * getSpeed());
 }
 
 //--------------------------------------------------------------
-string ofxVideoBufferPlayer::toString() {
+string ofxVideoBufferPlayer::toString() /*const of is not const correct */{
     string stats = "";
     stats+= ("Count, Size   [" + ofToString(getCount())) + ",";
     stats+= ofToString(getSize()) + "]\n";
@@ -786,11 +786,11 @@ int ofxVideoBufferPlayer::bufferMod(int frame) {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBufferPlayer::frameNormToFrame(float n) {
+int ofxVideoBufferPlayer::frameNormToFrame(float n) /*const of is not const correct */{
     return bufferMod(ofMap(n, 0, 1, 0, getCount()));
 }
 
 //--------------------------------------------------------------
-float ofxVideoBufferPlayer::frameToFrameNorm(int frame) {
+float ofxVideoBufferPlayer::frameToFrameNorm(int frame) /*const of is not const correct */ {
     return ofMap(bufferMod(frame), 0, getCount(), 0, 1);
 }

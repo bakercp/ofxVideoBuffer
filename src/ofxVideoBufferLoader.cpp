@@ -33,7 +33,7 @@ ofxVideoBufferLoader::ofxVideoBufferLoader() {
 ofxVideoBufferLoader::~ofxVideoBufferLoader() {}
 
 //--------------------------------------------------------------
-void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, string _filename) {
+void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, const string& _filename) {
     
     image = ofxSharedVideoFrame(new ofxVideoFrame());
     
@@ -54,13 +54,13 @@ void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, string _filena
 
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer, 
-                                     string _filename) {
+                                     const string& _filename) {
     loadMovie(_buffer,_filename,0,INT_MAX);
 }
 
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer, 
-                                     string _filename, 
+                                     const string& _filename,
                                      int _startFrame, 
                                      int _endFrame) {
     
@@ -86,22 +86,22 @@ void ofxVideoBufferLoader::cancelLoad(){
 }
 
 //--------------------------------------------------------------
-float ofxVideoBufferLoader::getPercentLoaded() {
+float ofxVideoBufferLoader::getPercentLoaded() const {
     return float(currentFrame) / (endFrame - startFrame);
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferLoader::isIdle() {
+bool ofxVideoBufferLoader::isIdle() const {
     return state == OFX_VID_BUFFER_IDLE;
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferLoader::isLoading() {
+bool ofxVideoBufferLoader::isLoading() const {
     return state == OFX_VID_BUFFER_LOADING;
 }
 
 //--------------------------------------------------------------
-bool ofxVideoBufferLoader::isComplete() {
+bool ofxVideoBufferLoader::isComplete() const {
     return state == OFX_VID_BUFFER_COMPLETE;
 }
 
@@ -113,7 +113,7 @@ void ofxVideoBufferLoader::reset() {
 }
 
 //--------------------------------------------------------------
-ofxVideoBufferLoaderState ofxVideoBufferLoader::getState() {
+ofxVideoBufferLoaderState ofxVideoBufferLoader::getState() const {
     return state;
 }
 

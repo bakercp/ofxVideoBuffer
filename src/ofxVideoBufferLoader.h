@@ -48,21 +48,21 @@ public:
     ofxVideoBufferLoader();
     virtual ~ofxVideoBufferLoader();    
 
-    void loadImage(ofxVideoBufferData* _buffer, string _filename);
-	void loadMovie(ofxVideoBufferData* _buffer, string _filename);
-	void loadMovie(ofxVideoBufferData* _buffer, string _filename, int _startFrame, int _endFrame);
+    void loadImage(ofxVideoBufferData* _buffer, const string& _filename);
+	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename);
+	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename, int _startFrame, int _endFrame);
 
 	void cancelLoad();
 
     void reset();
     
-    float getPercentLoaded();
+    float getPercentLoaded() const;
 
-    bool isIdle();
-    bool isLoading();
-    bool isComplete();
+    bool isIdle() const;
+    bool isLoading() const;
+    bool isComplete() const;
     
-    ofxVideoBufferLoaderState getState();
+    ofxVideoBufferLoaderState getState() const;
     
     int getStartFrame()   const;
     int getEndFrame()     const;

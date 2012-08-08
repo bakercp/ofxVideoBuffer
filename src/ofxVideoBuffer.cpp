@@ -100,17 +100,17 @@ void ofxVideoBuffer::update() {
 
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadImage(string _filename) {
+void ofxVideoBuffer::loadImage(const string& _filename) {
     loader.loadImage(&buffer,_filename);
 }
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadMovie(string _filename) {
+void ofxVideoBuffer::loadMovie(const string& _filename) {
     loadMovie(_filename,0,INT_MAX);
 }
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadMovie(string _filename, int _startFrame, int _endFrame) {
+void ofxVideoBuffer::loadMovie(const string& _filename, int _startFrame, int _endFrame) {
     loader.loadMovie(&buffer,_filename,_startFrame,_endFrame);
 }
 
