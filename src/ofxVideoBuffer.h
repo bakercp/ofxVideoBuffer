@@ -91,29 +91,7 @@ public:
     bool  isWritable();
     void  setReadOnly(bool readOnly);
     
-    
-    string toString() {
-        stringstream ss;
-        ss << "ofxVideoBuffer:" << endl;
-        if(isFixedBuffer()) {
-            ss << "\tTYPE=FIXED" << endl;
-        } else if(isPassthroughBuffer()) {
-            ss << "\tTYPE=PASSTHROUGH" << endl;
-        } else if(isCircularBuffer()) {
-            ss << "\tTYPE=CIRCULAR" << endl;
-        }
-        ss << "\tFrameRate="<< getFrameRate() << endl;
-        ss << "\t%Full="<< getPercentFull() << endl;
-        ss << "\tSize="<< getSize() << endl;
-        ss << "\tCount="<< getCount() << endl;
-        ss << "\tFrameRate="<< getFrameRate() << endl;
-        ss << "\tIsLoading="<< isLoading() << endl;
-        ss << "\tIsReadOnly="<< isReadOnly() << endl;
-        
-        return ss.str();
-        
-        
-    }
+    string toString();
 
 protected:
     bool                 readOnly; // just a loose flag for preventing writes
