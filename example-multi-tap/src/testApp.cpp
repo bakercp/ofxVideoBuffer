@@ -182,7 +182,7 @@ void testApp::keyPressed  (int key){
     int l0 = players[currentPlayer]->getLoopPointStart();
     int l1 = players[currentPlayer]->getLoopPointEnd();
     ofLoopType lt = players[currentPlayer]->getLoopType(); 
-    ofVideoBufferType vbt = OFX_VIDEO_BUFFER_FIXED;
+    ofxVideoBufferType vbt = OFX_VIDEO_BUFFER_FIXED;
     if(players[currentPlayer]->isBufferPlayer()) {
        vbt = players[currentPlayer]->getVideoBuffer()->getBufferType();
     }
