@@ -22,8 +22,8 @@ public:
     void mouseReleased(int x, int y, int button);
     void resized(int w, int h);
 
-    vector<ofxVideoBuffer*> buffers;
-    vector<ofxVideoBufferPlayer*> players;
+    vector<ofxSharedVideoBuffer> buffers;
+    vector<ofxSharedVideoBufferPlayer> players;
     
     bool useBuffer;
     

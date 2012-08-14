@@ -2,14 +2,7 @@
 
 
 testApp::~testApp() {
-    for(int i = 0; i < players.size(); i++) {
-        delete players[i];
-    }
     players.clear();
-
-    for(int i = 0; i < buffers.size(); i++) {
-        delete buffers[i];
-    }
     buffers.clear();
 }
 
@@ -27,64 +20,64 @@ void testApp::setup(){
 	ofSetFrameRate(60);
 
     
-    ofxVideoBuffer* buffer = new ofxVideoBuffer();
+    ofxSharedVideoBuffer buffer(new ofxVideoBuffer());
     buffer->loadMovie("fingers.mov");
     buffers.push_back(buffer);
     
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("bball.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("countdown.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("dishes.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("crashtest.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("countdown15.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("dozer.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("dvkite.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("dvducks.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("garbage.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("oh.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("ozone.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadMovie("rain.mov");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadImage("IMG_0004.JPG");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadImage("IMG_0003.JPG");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadImage("IMG_0005.JPG");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadImage("IMG_0006.JPG");
     buffers.push_back(buffer);
-    buffer = new ofxVideoBuffer();
+    buffer = ofxSharedVideoBuffer(new ofxVideoBuffer());
     buffer->loadImage("IMG_0007.JPG");
     buffers.push_back(buffer);
     
     for(int i = 0; i < rows * cols; i++) {
-        ofxVideoBufferPlayer* player = new ofxVideoBufferPlayer();
+        ofxSharedVideoBufferPlayer player(new ofxVideoBufferPlayer());
         if(useBuffer) {
             player->loadVideoBuffer(buffers[int(ofRandom(buffers.size()))]);
             player->start();
@@ -100,6 +93,10 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update() {
+    for(int i = 0; i < buffers.size(); i++) {
+        buffers[i]->update();
+    }
+    
     for(int i = 0; i < rows * cols; i++) {
         players[i]->update();
     }
@@ -245,11 +242,6 @@ void testApp::keyPressed  (int key){
         default:
             break;
     }
-    
-        
-    
-
-    
 
 }
 

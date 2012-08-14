@@ -31,8 +31,8 @@ public:
     ofVideoGrabber 		vidGrabber;
     ofxIpVideoGrabber   vidIpCam;
     
-    vector<ofxVideoBuffer*>       buffers;
-    vector<ofxVideoBufferPlayer*> bufferPlayers;
+    vector<ofxSharedVideoBuffer> buffers;
+    vector<ofxSharedVideoBufferPlayer> bufferPlayers;
     
     int currentBufferPlayer;
     int currentVideoSource;

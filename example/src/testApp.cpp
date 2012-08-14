@@ -2,14 +2,13 @@
 
 
 testApp::~testApp() {
-    for(int i = 0; i < bufferPlayers.size(); i++) {
-        delete bufferPlayers[i];
-    }
-    bufferPlayers.clear();
+    cout << "CLEANING UP" << endl;
+    vidPlayer.close();
+    vidGrabber.close();
+    vidIpCam.close();
+
     
-    for(int i = 0; i < buffers.size(); i++) {
-        delete buffers[i];
-    }
+    bufferPlayers.clear();
     buffers.clear();
 }
 
@@ -42,9 +41,9 @@ void testApp::setup(){
     
     
     for(int i = 0; i < 6; i++) {
-        ofxVideoBuffer* videoBuffer = new ofxVideoBuffer(100);
+        ofxSharedVideoBuffer videoBuffer(new ofxVideoBuffer(100));
         buffers.push_back(videoBuffer);
-        ofxVideoBufferPlayer* videoPlayer = new ofxVideoBufferPlayer();
+        ofxSharedVideoBufferPlayer videoPlayer(new ofxVideoBufferPlayer());
         videoPlayer->loadVideoBuffer(videoBuffer);
         bufferPlayers.push_back(videoPlayer);
         
@@ -140,15 +139,16 @@ void testApp::draw(){
     
     if(isRecording) {
         
-        ofxVideoFrame frame = ofxVideoFrame(new ofImage());
-        frame->setFromPixels(vidGrabber.getPixelsRef());
-//        vidIpCam.getPixelsRef()
+        ofxSharedVideoFrame frame(new ofImage());
         
         if(currentVideoSource == 0 && vidGrabber.isFrameNew()) {
+            frame->setFromPixels(vidGrabber.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 1 ) {//&& vidIpCam.isFrameNew()) { // TODO
+            frame->setFromPixels(vidIpCam.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 2 && vidPlayer.isFrameNew() ) {
+            frame->setFromPixels(vidPlayer.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         }
     }
@@ -198,19 +198,16 @@ void testApp::draw(){
 
 }
 
-
-
 //--------------------------------------------------------------
 void testApp::keyPressed  (int key){
    
     int l0 = bufferPlayers[currentBufferPlayer]->getLoopPointStart();
     int l1 = bufferPlayers[currentBufferPlayer]->getLoopPointEnd();
     ofLoopType lt = bufferPlayers[currentBufferPlayer]->getLoopType(); 
-    ofVideoBufferType vbt = bufferPlayers[currentBufferPlayer]->getVideoBuffer()->getBufferType();
+    ofxVideoBufferType vbt = bufferPlayers[currentBufferPlayer]->getVideoBuffer()->getBufferType();
     
     float speed = bufferPlayers[currentBufferPlayer]->getSpeed();
 
-    
     int position = bufferPlayers[currentBufferPlayer]->getFrame();
     
     switch (key) {
@@ -277,11 +274,6 @@ void testApp::keyPressed  (int key){
         default:
             break;
     }
-    
-        
-    
-
-    
 
 }
 
