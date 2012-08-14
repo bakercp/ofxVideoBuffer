@@ -752,7 +752,7 @@ string ofxVideoBufferPlayer::toString() /*const of is not const correct */{
     stats+= "Buffer Type   [";
     
     if(!isLoaded()) {
-        stats+= "No Source Loaded\n";
+        stats+= "No Source Loaded";
     } else if(isImagePlayer()) {
         stats+= "Image Player";
     } else if(isVideoPlayer()) {
