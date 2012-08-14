@@ -46,9 +46,11 @@ public:
     ofxVideoBufferPlayer(); 
     virtual ~ofxVideoBufferPlayer();
 
+    void reset();
+    
     //////////////////////////////////////////////////
     // Frame Access //////////////////////////////////
-    ofxSharedVideoFrame& getCurrentFrame(); // retrieve a reference to the current frame
+    ofxSharedVideoFrame getCurrentFrame(); // retrieve a reference to the current frame
 
     //////////////////////////////////////////////////
     // ofBaseVideo ///////////////////////////////////
@@ -84,11 +86,12 @@ public:
     // Source ////////////////////////////////////////
     void loadImage(const string& filename);
     void loadMovie(const string& filename);
-    void loadVideoBuffer(ofxVideoBuffer* buffer); // set the internal buffer to the pointer
+    void loadVideoBuffer(ofxSharedVideoBuffer buffer); // set the internal buffer to the pointer
+    void replaceMovieWithBuffer(ofxSharedVideoBuffer buffer); // set the internal buffer to the pointer
 
-    ofxSharedVideoFrame&  getImagePlayer();
-    ofxVideoPlayer& getVideoPlayer();   // get the internal video player
-    ofxVideoBuffer* getVideoBuffer();   // get the internal buffer pointer
+    ofxSharedVideoFrame   getImagePlayer();
+    ofxSharedVideoPlayer  getVideoPlayer();   // get the internal video player
+    ofxSharedVideoBuffer  getVideoBuffer();   // get the internal buffer pointer
     
     bool    isImagePlayer() const;
     bool    isVideoPlayer() const;
@@ -157,8 +160,8 @@ protected:
     ofxSharedVideoFrame  emptyFrame;      // the empty frame
     
     ofxSharedVideoFrame   image;
-    ofxVideoBuffer* buffer;         // the pointer to the current video buffer 
-    ofxVideoPlayer  player;         // the pointer to the current video player 
+    ofxSharedVideoBuffer  buffer;         // the pointer to the current video buffer 
+    ofxSharedVideoPlayer  player;         // the pointer to the current video player
                                     // if the player is playing from disk, it must
                                     // own its own ofVideoPlayer.  ofVideoPlayer does
                                     // not take kindly to multi-tap frames.
@@ -192,3 +195,6 @@ protected:
     float   frameToFrameNorm(int   frame) /*const of is not const correct */;
     
 };
+
+
+typedef ofPtr< ofxVideoBufferPlayer > ofxSharedVideoBufferPlayer;

@@ -28,14 +28,19 @@
 
 //--------------------------------------------------------------
 ofxVideoBufferPlayer::ofxVideoBufferPlayer() {
+    reset();
+}
+
+
+//--------------------------------------------------------------
+ofxVideoBufferPlayer::~ofxVideoBufferPlayer() {
+    // the player never owns the buffer or the player
+}
+
+//--------------------------------------------------------------
+void ofxVideoBufferPlayer::reset() {
     emptyFrame = ofxSharedVideoFrame(new ofImage());
     emptyFrame->allocate(1,1,OF_IMAGE_COLOR);
-    
-    image      = ofxSharedVideoFrame(new ofImage());
-    image->allocate(1,1,OF_IMAGE_COLOR);
-    
-    
-    buffer = NULL;
     
     sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_NONE;
     
@@ -57,20 +62,16 @@ ofxVideoBufferPlayer::ofxVideoBufferPlayer() {
 }
 
 //--------------------------------------------------------------
-ofxVideoBufferPlayer::~ofxVideoBufferPlayer() {
-    // the player never owns the buffer or the player
-}
-
-//--------------------------------------------------------------
 bool ofxVideoBufferPlayer::isFrameNew() {
     return bIsFrameNew;
 }
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::close() {
-    buffer = NULL;
-    player.close();
-    image->clear();
-    sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_NONE;
+    buffer.reset();
+    player.reset();
+    image.reset();
+    
+    reset();
 }
 
 //--------------------------------------------------------------
@@ -85,7 +86,7 @@ unsigned char * ofxVideoBufferPlayer::getPixels() {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.getPixels();
+            return player->getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->at(currentFrame)->getPixels();
@@ -107,7 +108,7 @@ ofPixelsRef ofxVideoBufferPlayer::getPixelsRef() {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.getPixelsRef();
+            return player->getPixelsRef();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->at(currentFrame)->getPixelsRef();
             break;
@@ -133,7 +134,7 @@ void ofxVideoBufferPlayer::draw(float x,float y) {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            player.draw(x,y);
+            player->draw(x,y);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             buffer->at(currentFrame)->draw(x,y);
@@ -159,7 +160,7 @@ void  ofxVideoBufferPlayer::draw(float x,float y,float w, float h) {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            player.draw(x,y,w,h);
+            player->draw(x,y,w,h);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             buffer->at(currentFrame)->draw(x,y,w,h);
@@ -185,7 +186,7 @@ float ofxVideoBufferPlayer::getHeight() {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.getHeight();
+            return player->getHeight();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->at(currentFrame)->getHeight();
             break;
@@ -210,7 +211,7 @@ float ofxVideoBufferPlayer::getWidth() {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
-            return player.getWidth();
+            return player->getWidth();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->at(currentFrame)->getWidth();
             break;
@@ -236,16 +237,10 @@ void  ofxVideoBufferPlayer::resetAnchor() {
 
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::loadImage(const string& filename) {
+    close();
+    image = ofxSharedVideoFrame(new ofImage());
     if(image->loadImage(filename)) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE;
-        player.play();
-        player.setSpeed(0);
-        lastFrame = -1;
-        currentFrame = bufferMod(currentFrame);
-        lastFramePushTime = -1;
-        lastFrameFraction = 0.0f;
-        lastFrame = -1;
-        clearLoopPoints();    
     } else {
         close();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadImage - failure to load");
@@ -254,16 +249,12 @@ void ofxVideoBufferPlayer::loadImage(const string& filename) {
 
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::loadMovie(const string& filename) {
-    if(player.loadMovie(filename)) {
+    close();
+    player = ofxSharedVideoPlayer(new ofxVideoPlayer());
+    if(player->loadMovie(filename)) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER;
-        player.play();
-        player.setSpeed(0);
-        lastFrame = -1;
-        currentFrame = bufferMod(currentFrame);
-        lastFramePushTime = -1;
-        lastFrameFraction = 0.0f;
-        lastFrame = -1;
-        clearLoopPoints();    
+        player->play();
+        player->setSpeed(0);
     } else {
         close();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadMovie - failure to load");
@@ -271,16 +262,40 @@ void ofxVideoBufferPlayer::loadMovie(const string& filename) {
 }
 
 //--------------------------------------------------------------
-void ofxVideoBufferPlayer::loadVideoBuffer(ofxVideoBuffer* _buffer) {
+void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) {
+    if(_buffer != NULL) {
+        if(isVideoPlayer()) {
+            // trust that this is a copy
+            if(getSize() == _buffer->getSize()) {
+                // jump right into things without skipping a beat (fingers crossed)
+                sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
+                player.reset();
+                buffer = _buffer;
+                // keep all current settings
+                return;
+            } else {
+                ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: incomingn buffer does not match the size of the current video, so loading as new buffer.";
+            }
+        } else {
+            ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: this is not a video player, so loading as a buffer.";
+        }
+    } else {
+        ofLogError() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: buffer was NULL.";
+        close();
+        return;
+    }
+    
+    // loading as a normal buffer
+    loadVideoBuffer(_buffer);
+
+}
+
+//--------------------------------------------------------------
+void ofxVideoBufferPlayer::loadVideoBuffer(ofxSharedVideoBuffer _buffer) {
+    close();
     if(_buffer != NULL) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
-        player.close();
         buffer = _buffer;
-        lastFrame = -1;
-        currentFrame = bufferMod(currentFrame);
-        lastFramePushTime = -1;
-        lastFrameFraction = 0.0f;
-        clearLoopPoints();
     } else {
         close();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadVideoBuffer - null buffer loaded, no change.");
@@ -288,17 +303,17 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxVideoBuffer* _buffer) {
 }
 
 //--------------------------------------------------------------
-ofxSharedVideoFrame&  ofxVideoBufferPlayer::getImagePlayer() {
+ofxSharedVideoFrame  ofxVideoBufferPlayer::getImagePlayer() {
     return image;
 }
 
 //--------------------------------------------------------------
-ofxVideoPlayer&  ofxVideoBufferPlayer::getVideoPlayer() {
+ofxSharedVideoPlayer ofxVideoBufferPlayer::getVideoPlayer() {
     return player;
 }
 
 //--------------------------------------------------------------
-ofxVideoBuffer* ofxVideoBufferPlayer::getVideoBuffer() {
+ofxSharedVideoBuffer ofxVideoBufferPlayer::getVideoBuffer() {
     return buffer;
 }
 
@@ -335,7 +350,7 @@ int ofxVideoBufferPlayer::getCount() /*const of is not const correct */ {
             return 1;
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
-            return player.getTotalNumFrames();
+            return player->getTotalNumFrames();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->getCount();
@@ -353,7 +368,7 @@ int ofxVideoBufferPlayer::getSize() /*const of is not const correct */ {
             return 1;
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
-            return player.getTotalNumFrames();
+            return player->getTotalNumFrames();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->getSize();
             break;
@@ -496,8 +511,8 @@ void ofxVideoBufferPlayer::update() {
     if(bIsFrameNew) {
         if(sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER) {
             //cout << "updating player." << endl;
-            player.setFrame(currentFrame);
-            player.update();
+            player->setFrame(currentFrame);
+            player->update();
         } else if(sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER) {
             // the video buffer updates itself
         }
@@ -521,7 +536,7 @@ ofTexture& ofxVideoBufferPlayer::getTextureReference() {
             return image->getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
-            return player.getTextureReference();
+            return player->getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             return buffer->at(currentFrame)->getTextureReference();
@@ -542,7 +557,7 @@ void ofxVideoBufferPlayer::setUseTexture(bool bUseTex) {
             return image->setUseTexture(bUseTex);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
-            player.setUseTexture(bUseTex);
+            player->setUseTexture(bUseTex);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
             buffer->at(currentFrame)->setUseTexture(bUseTex);
