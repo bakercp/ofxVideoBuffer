@@ -111,6 +111,6 @@ protected:
     float frameRate;
 };
 
-
+typedef ofPtr < ofxVideoBuffer > ofxSharedVideoBuffer;
 
 
