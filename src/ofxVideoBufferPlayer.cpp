@@ -788,6 +788,7 @@ string ofxVideoBufferPlayer::toString() /*const of is not const correct */{
     }
     
     stats+= "Loop Mode     [" + lts + "]\n";
+    stats+= "Is Playing    [" + ofToString(isPlaying()) + "]\n";
     stats+= "Current Frame [" + ofToString(getFrame()) + "]\n";
     stats+= "Speed         [" + ofToString(getSpeed()) + "]";
     return stats;
