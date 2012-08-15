@@ -73,6 +73,7 @@ bool ofxVideoBufferPlayer::isFrameNew() {
 }
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::close() {
+    emptyFrame.reset();
     buffer.reset();
     player.reset();
     image.reset();
@@ -402,13 +403,12 @@ float ofxVideoBufferPlayer::getPctFull() /*const of is not const correct */ {
 //--------------------------------------------------------------
 
 void ofxVideoBufferPlayer::update() {
-    if(!isLoaded()) return;
-    if(isEmpty()) return;
+    if(!isLoaded() || isEmpty() || !isPlaying() || isPaused()) return;
     
     float now = ofGetElapsedTimef();
         
     // if this is the first time
-    if(lastFramePushTime == -1) {
+    if(lastFramePushTime < -1) {
         lastFramePushTime = now;
     }
     
@@ -434,8 +434,7 @@ void ofxVideoBufferPlayer::update() {
 
     lastFramePushTime = now;
     
-    if(!fequals(numFramesToPush,0.0f) && isPlaying() && !isPaused()) {
-        
+    if( !fequals(numFramesToPush,0.0f) ) {
         
         if(loopType == OF_LOOP_NONE) {
             currentFrame += numFramesToPush; // may not be w/in range 
@@ -516,15 +515,12 @@ void ofxVideoBufferPlayer::update() {
     
     if(bIsFrameNew) {
         if(sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER) {
-            //cout << "updating player." << endl;
             player->setFrame(currentFrame);
             player->update();
         } else if(sourceType == OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER) {
             // the video buffer updates itself
         }
     }
-    
-    
 }
 
 //--------------------------------------------------------------
@@ -720,7 +716,6 @@ void ofxVideoBufferPlayer::setSpeed(float _speed) {
 float ofxVideoBufferPlayer::getSpeed() {
     return speed;
 }
-
 
 //--------------------------------------------------------------
 float ofxVideoBufferPlayer::getFrameRate() const {
