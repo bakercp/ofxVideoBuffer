@@ -42,15 +42,18 @@ ofxVideoBufferPlayer::~ofxVideoBufferPlayer() {
 
 //--------------------------------------------------------------
 void ofxVideoBufferPlayer::reset() {
+    
     emptyFrame = ofxSharedVideoFrame(new ofImage());
     emptyFrame->allocate(1,1,OF_IMAGE_COLOR);
     
     sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_NONE;
     
     speed           = 1.0f;
-    playDirection   = 1.0f;
+    playDirection   = true;
     
     // frame indicies, times, etc
+    bIsPlaying   = false;
+    bIsPaused    = false;
     bIsFrameNew  = true;
     lastFrame    = -1;
     currentFrame = 0;
