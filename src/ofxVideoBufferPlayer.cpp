@@ -413,7 +413,7 @@ void ofxVideoBufferPlayer::update() {
     
     float numFramesToPush = 0; // can be negative
     
-    if(getSpeed() != 0) {
+    if(!fequals(getSpeed(), 0.0f)) {
         float frameDuration = getFrameDuration();  // 
         numFramesToPush     = elapsedTime / frameDuration; // can be negative
         numFramesToPush    += lastFrameFraction;           // add on any leftovers from last frame
@@ -431,7 +431,7 @@ void ofxVideoBufferPlayer::update() {
 
     lastFramePushTime = now;
     
-    if(numFramesToPush != 0 && isPlaying() && !isPaused()) {
+    if(!fequals(numFramesToPush,0.0f) && isPlaying() && !isPaused()) {
         
         
         if(loopType == OF_LOOP_NONE) {
@@ -471,7 +471,7 @@ void ofxVideoBufferPlayer::update() {
                 
             } else if(loopType == OF_LOOP_PALINDROME) {
                 // directionality is controlled not by speed vector but by palindrome state
-                int absNumFramesToPush = ABS(numFramesToPush);
+                int absNumFramesToPush = std::fabs(numFramesToPush);
                 
                 currentFrame += (playDirection) ? absNumFramesToPush : -absNumFramesToPush;
                 
