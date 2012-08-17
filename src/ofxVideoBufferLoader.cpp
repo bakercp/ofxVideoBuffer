@@ -33,7 +33,12 @@ ofxVideoBufferLoader::ofxVideoBufferLoader() {
 ofxVideoBufferLoader::~ofxVideoBufferLoader() {}
 
 //--------------------------------------------------------------
-void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, const string& _filename) {
+void ofxVideoBufferLoader::loadImageAsync(ofxVideoBufferData* _buffer, const string& _filename) {
+    
+    if(isLoading()) {
+        ofLogError("ofxVideoBufferLoader") << "is already loading a video.  You must wait.";
+        return;
+    }
     
     image = ofxSharedVideoFrame(new ofxVideoFrame());
     
@@ -41,6 +46,7 @@ void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, const string& 
         loadType = OFX_VID_BUFFER_LOAD_IMAGE;
         buffer = _buffer;
         image->setUseTexture(false); // important
+        frameCount = 1;
         startFrame = 0;
         endFrame   = 0;
         currentFrame = 0;
@@ -53,26 +59,33 @@ void ofxVideoBufferLoader::loadImage(ofxVideoBufferData* _buffer, const string& 
 }
 
 //--------------------------------------------------------------
-void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer, 
+void ofxVideoBufferLoader::loadMovieAsync(ofxVideoBufferData* _buffer,
                                      const string& _filename) {
-    loadMovie(_buffer,_filename,0,INT_MAX);
+    loadMovieAsync(_buffer,_filename,0,INT_MAX);
 }
 
 //--------------------------------------------------------------
-void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer, 
+void ofxVideoBufferLoader::loadMovieAsync(ofxVideoBufferData* _buffer,
                                      const string& _filename,
                                      int _startFrame, 
                                      int _endFrame) {
-    
+
+    if(isLoading()) {
+        ofLogError("ofxVideoBufferLoader") << "is already loading a video.  You must wait.";
+        return;
+    }
+
     if(player.loadMovie(_filename)) {
         loadType = OFX_VID_BUFFER_LOAD_VIDEO;
         buffer = _buffer;
         player.setUseTexture(false); // important
-        int frameCount = player.getTotalNumFrames();
+        frameCount = player.getTotalNumFrames();
+        // TODO : fancy modulo these start / end frames
         startFrame     = ofClamp(_startFrame,        0, frameCount - 1);
         endFrame       = ofClamp(_endFrame, _startFrame, frameCount - 1);
         currentFrame   = startFrame;
         buffer->clear(); // erase all of the items
+    
         startThread(true,false);
     } else {
         reset();
@@ -80,10 +93,11 @@ void ofxVideoBufferLoader::loadMovie(ofxVideoBufferData* _buffer,
     }
 }
 
-//--------------------------------------------------------------
-void ofxVideoBufferLoader::cancelLoad(){
-    stopThread();
-}
+////--------------------------------------------------------------
+//void ofxVideoBufferLoader::cancelLoad(){
+//    stopThread();
+//    
+//}
 
 //--------------------------------------------------------------
 float ofxVideoBufferLoader::getPercentLoaded() const {
@@ -107,9 +121,17 @@ bool ofxVideoBufferLoader::isComplete() const {
 
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::reset() {
-    state       = OFX_VID_BUFFER_IDLE;
+    setState(OFX_VID_BUFFER_IDLE);
+    frameCount   = 0;
+    currentFrame = 0;
     startFrame   = 0;
     endFrame     = INT_MAX;
+
+	buffer = NULL;
+    player.close();
+    image.reset();
+    
+    loadType = OFX_VID_BUFFER_LOAD_VIDEO;
 }
 
 //--------------------------------------------------------------
@@ -119,7 +141,8 @@ ofxVideoBufferLoaderState ofxVideoBufferLoader::getState() const {
 
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::threadedFunction(){
-    state = OFX_VID_BUFFER_LOADING;
+    
+    setState(OFX_VID_BUFFER_LOADING);
     
     if(loadType == OFX_VID_BUFFER_LOAD_IMAGE) {
         if(lock()) {
@@ -128,8 +151,10 @@ void ofxVideoBufferLoader::threadedFunction(){
             unlock();
         }
     } else if(loadType == OFX_VID_BUFFER_LOAD_VIDEO) {
+        
         while (currentFrame <= endFrame) {
             if( lock() ){
+
                 ofxSharedVideoFrame frame = ofxSharedVideoFrame(new ofxVideoFrame());
                 frame->setUseTexture(false);
                 // TODO: there are strange sitatuations with set frame.
@@ -145,7 +170,7 @@ void ofxVideoBufferLoader::threadedFunction(){
         }
     }
     
-    state = OFX_VID_BUFFER_COMPLETE;
+    setState(OFX_VID_BUFFER_COMPLETE);
 }
 
 //--------------------------------------------------------------
@@ -161,6 +186,22 @@ int ofxVideoBufferLoader::getEndFrame() const {
 //--------------------------------------------------------------
 int ofxVideoBufferLoader::getCurrentFrame() const {
     return currentFrame;
+}
+
+//--------------------------------------------------------------
+int ofxVideoBufferLoader::getFrameCount() const {
+    if(buffer != NULL) {
+        return frameCount;
+    } else {
+        ofLogWarning("ofxVideoBufferLoader") << "attempted to get the target number of frames, but the buffer is NULL.";
+        return 0;
+    }
+}
+
+
+//--------------------------------------------------------------
+void ofxVideoBufferLoader::setState(ofxVideoBufferLoaderState _state) {
+    state = _state;
 }
 
 

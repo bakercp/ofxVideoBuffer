@@ -24,6 +24,8 @@
  
 #include "ofxVideoBuffer.h"
 
+bool fequals(float f0, float f1) { return fabs(f1 - f0) < numeric_limits<float>::epsilon(); }
+
 /*
 //--------------------------------------------------------------
 ofxVideoBuffer::ofxVideoBuffer(ofxVideoBuffer& mom) {
@@ -85,72 +87,87 @@ void ofxVideoBuffer::update(ofEventArgs & args) {
 //--------------------------------------------------------------
 void ofxVideoBuffer::update() {
         
-    if (loader.isComplete()) {
-        ofLog(OF_LOG_NOTICE,"ofxVideoBuffer::update - loader complete."); 
-        // TODO, upload textures as soon as they are ready
+    if (!loader.isIdle()) { // i.e. if it is complete or loading
         for(int i = 0; i < (int)buffer.size(); i++) {
             buffer[i]->setUseTexture(true);
             buffer[i]->update(); // load all pixels into opengl textures
         }
-        count = getSize();//getSize() - 1;// set it to the last valid
-        loader.reset();
-        setReadOnly(true); // lock it.
-    } 
+        count = buffer.size(); // set it to the last valid
+        if(buffer.size() == loader.getFrameCount()) {
+            loader.reset();
+        }
+        
+    } else {
+        //cout << "OFX_VID_BUFFER_IDLE" << endl;
+    }
 }
 
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadImage(const string& _filename) {
-    loader.loadImage(&buffer,_filename);
+void ofxVideoBuffer::loadImageAsync(const string& _filename) {
+    clear(); // clear count
+    loader.loadImageAsync(&buffer,_filename);
 }
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadMovie(const string& _filename) {
-    loadMovie(_filename,0,INT_MAX);
+void ofxVideoBuffer::loadMovieAsync(const string& _filename) {
+    clear(); // clear count
+    loadMovieAsync(_filename,0,INT_MAX);
 }
 
 //--------------------------------------------------------------
-void ofxVideoBuffer::loadMovie(const string& _filename, int _startFrame, int _endFrame) {
-    loader.loadMovie(&buffer,_filename,_startFrame,_endFrame);
+void ofxVideoBuffer::loadMovieAsync(const string& _filename, int _startFrame, int _endFrame) {
+    clear(); // clear count
+    loader.loadMovieAsync(&buffer,_filename,_startFrame,_endFrame);
 }
 
 //--------------------------------------------------------------
-bool  ofxVideoBuffer::isLoading() {
+bool  ofxVideoBuffer::isLoaded() const {
+    return !isLoading() && !isEmpty();
+}
+
+//--------------------------------------------------------------
+bool  ofxVideoBuffer::isLoading() const {
     return loader.isLoading();
+}
+
+//--------------------------------------------------------------
+float ofxVideoBuffer::getPercentLoaded() const {
+    return loader.getPercentLoaded();
 }
 
 //--------------------------------------------------------------
 bool ofxVideoBuffer::bufferFrame(const ofxSharedVideoFrame& frame) {
     if(readOnly) {
+        ofLogWarning("ofxVideoBuffer") << "attempting bufferFrame to a read only buffer. Failing.";
         return false;
     }
     
     if(loader.isLoading()) { // no buffering while loading
-        count = 0;
+        ofLogWarning("ofxVideoBuffer") << "attempting bufferFrame while loader is loading. Failing.";
         return false;
     }
     
     if(isPassthroughBuffer()) {
-        buffer[0] = frame;//setFromPixels(pixels); // the 0th frame is always the passthrough frame
+        buffer[0] = frame; // the 0th frame is always the passthrough frame
         return true;
     } else if(isFixedBuffer()) {
         if(count < getSize()) {
-            buffer[count] = frame;//->setFromPixels(pixels);
+            buffer[count] = frame;
             count++;
             return true;
         } else {
+            ofLogWarning("ofxVideoBuffer") << "attempting bufferFrame, buf fixed buffer is already full. Failing.";
             return false; // count
         }
     } else if(isCircularBuffer()) {
         if(count < getSize()) {
             // still adding like a fixed buffer
-            buffer[count] = frame;//->setFromPixels(pixels);
+            buffer[count] = frame;
             count++;
             return true;
         } else {
             // add a frame to the end
-            //ofxSharedVideoFrame newFrame;
-            //newFrame->setFromPixels(pixels);
             buffer.push_back(frame);
             
             // TODO: memory management here?  
@@ -160,7 +177,8 @@ bool ofxVideoBuffer::bufferFrame(const ofxSharedVideoFrame& frame) {
             return true;
         }
     } else {
-        // uh no idea
+        ofLogWarning("ofxVideoBuffer") << "attempting bufferFrame, but unknown buffer type. Failing.";
+        return false;
     }
 }
 
@@ -171,7 +189,7 @@ ofxSharedVideoFrame ofxVideoBuffer::operator [](int i) const {
 
 //--------------------------------------------------------------
 ofxSharedVideoFrame ofxVideoBuffer::at(int i) const {
-    if(isPassthroughBuffer() || isEmpty()) return buffer[0]; // TODO?
+    if(isPassthroughBuffer() || isEmpty()) return buffer[0]; // TODO? this will return buffer's empty frame
 
     // super modulo
     int r = getCount(); // keep index in range
@@ -189,13 +207,14 @@ float ofxVideoBuffer::getPercentFull() const {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBuffer::getCount() const {
+size_t ofxVideoBuffer::getCount() const {
     return count;
 }
 
 //--------------------------------------------------------------
 void ofxVideoBuffer::clear() {
-    count  = 0;
+    // does not immediately release the memory or references to shared ptrs
+    count = 0;
 }
 
 //--------------------------------------------------------------
@@ -204,7 +223,7 @@ bool ofxVideoBuffer::isEmpty() const {
 }
 
 //--------------------------------------------------------------
-int ofxVideoBuffer::getSize() const {
+size_t ofxVideoBuffer::getSize() const {
     return buffer.size();
 }
 
@@ -249,7 +268,7 @@ bool ofxVideoBuffer::isCircularBuffer() const {
 
 //--------------------------------------------------------------
 float ofxVideoBuffer::getFrameRate() {
-    if(frameRate == 0.0f) {
+    if(fequals(frameRate,0.0f)) {
         return 30.0f;
     } else {
         return frameRate;
@@ -277,6 +296,11 @@ void ofxVideoBuffer::setReadOnly(bool _readOnly) {
 }
 
 //--------------------------------------------------------------
+ofxVideoBufferLoader& ofxVideoBuffer::getLoaderRef() {
+    return loader;
+}
+
+//--------------------------------------------------------------
 string ofxVideoBuffer::toString() {
     stringstream ss;
     ss << "ofxVideoBuffer:" << endl;
@@ -296,5 +320,87 @@ string ofxVideoBuffer::toString() {
     ss << "\tIsReadOnly="<< isReadOnly() << endl;
     
     return ss.str();
+}
+
+//--------------------------------------------------------------
+void ofxVideoBuffer::reportSizeChanged() {
+    for(listenersIter = listeners.begin();
+        listenersIter != listeners.end();) {
+        
+        if((*listenersIter) != NULL) {
+            (*listenersIter)->bufferSizeChanged(this);
+            listenersIter++;
+        } else {
+            ofLogError("ofxVideoBuffer") << "listener become NULL, removing from listeners.";
+            listeners.erase(*listenersIter++);
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofxVideoBuffer::reportCleared() {
+    for(listenersIter = listeners.begin();
+        listenersIter != listeners.end();) {
+        
+        if((*listenersIter) != NULL) {
+            (*listenersIter)->bufferCleared(this);
+            listenersIter++;
+        } else {
+            ofLogError("ofxVideoBuffer") << "listener become NULL, removing from listeners.";
+            listeners.erase(*listenersIter++);
+        }
+    }
+}
+
+//--------------------------------------------------------------
+void ofxVideoBuffer::reportLoadComplete() {
+    for(listenersIter = listeners.begin();
+        listenersIter != listeners.end();) {
+        
+        if((*listenersIter) != NULL) {
+            (*listenersIter)->bufferLoadComplete(this);
+            listenersIter++;
+        } else {
+            ofLogError("ofxVideoBuffer") << "listener become NULL, removing from listeners.";
+            listeners.erase(*listenersIter++);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------
+bool ofxVideoBuffer::hasListener(ofxVideoBufferListener* listener) {
+    return listener != NULL && listeners.find(listener) != listeners.end();
+}
+
+//--------------------------------------------------------------
+bool ofxVideoBuffer::addListener(ofxVideoBufferListener* listener) {
+    if(listener != NULL) {
+        bool success = listeners.insert(listener).second;
+        if(!success) {
+            ofLogWarning("ofxVideoBuffer") << "listener was already present." << endl;
+        }
+        return success;
+    } else {
+        ofLogError("ofxVideoBuffer") << "cannot add NULL listener." << endl;
+        return false;
+    }
+}
+
+//--------------------------------------------------------------
+bool ofxVideoBuffer::removeListener(ofxVideoBufferListener* listener) {
+    if(listener != NULL) {
+        listenersIter = listeners.find(listener);
+        if(listenersIter != listeners.end()) {
+            listeners.erase(listenersIter);
+            return true;
+        } else {
+            ofLogWarning("ofxVideoBuffer") << "did not contain listener." << endl;
+            return false;
+        }
+    } else {
+        ofLogError("ofxVideoBuffer") << "cannot add NULL listener." << endl;
+        return false;
+    }    
 }
 

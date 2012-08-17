@@ -30,9 +30,10 @@
 #include "ofxVideoBufferData.h"
 
 enum ofxVideoBufferLoaderState {
-    OFX_VID_BUFFER_IDLE     = 0,
-    OFX_VID_BUFFER_LOADING  = 1,
-    OFX_VID_BUFFER_COMPLETE = 2
+    OFX_VID_BUFFER_IDLE      = 0,
+    OFX_VID_BUFFER_LOADING   = 1,
+    OFX_VID_BUFFER_COMPLETE  = 2,
+//    OFX_VID_BUFFER_CANCELLED = 3
 };
 
 enum ofxVideoBufferLoadType {
@@ -48,11 +49,15 @@ public:
     ofxVideoBufferLoader();
     virtual ~ofxVideoBufferLoader();    
 
-    void loadImage(ofxVideoBufferData* _buffer, const string& _filename);
-	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename);
-	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename, int _startFrame, int _endFrame);
+    void loadImageAsync(ofxVideoBufferData* _buffer, const string& _filename);
+	void loadMovieAsync(ofxVideoBufferData* _buffer, const string& _filename);
+	void loadMovieAsync(ofxVideoBufferData* _buffer, const string& _filename, int _startFrame, int _endFrame);
 
-	void cancelLoad();
+//  void loadImage(ofxVideoBufferData* _buffer, const string& _filename);
+//	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename);
+//	void loadMovie(ofxVideoBufferData* _buffer, const string& _filename, int _startFrame, int _endFrame);
+
+//	void cancelLoad();
 
     void reset();
     
@@ -67,9 +72,14 @@ public:
     int getStartFrame()   const;
     int getEndFrame()     const;
     int getCurrentFrame() const;
+
+    int getFrameCount() const;
     
 protected:
-        
+    
+    void setState(ofxVideoBufferLoaderState state);
+    
+    int frameCount;
     int currentFrame;
     int startFrame;
     int endFrame;

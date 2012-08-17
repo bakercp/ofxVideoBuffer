@@ -131,6 +131,7 @@ void ofxVideoBufferPlayer::draw(float x,float y) {
         return;
     }
     
+    
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             emptyFrame->draw(x,y);
@@ -141,10 +142,25 @@ void ofxVideoBufferPlayer::draw(float x,float y) {
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOPLAYER:
             if(isFrameNew()) setFrame(currentFrame);
+            cout << "video player!" << endl;
             player->draw(x,y);
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
+        {
+        //    cout << "video buffer! "<< buffer->getSize() << "/" << buffer->getCount() << "| currentFrame=" << currentFrame << endl;
+            
+            
+           // cout << "current frame = " << currentFrame << " isTexLoaded->" << buffer->at(currentFrame)->isUsingTexture()<< endl;
+//            cout << buffer->toString() << endl;
+//            float w = buffer->at(currentFrame)->getWidth();
+//            float h = buffer->at(currentFrame)->getHeight();
+//            cout << "              [" << w << "/" << h << "]"   << endl;
+//            cout << "              [" << buffer->at(currentFrame)->getColor(w/2,h/2) << "]" << endl;
+            
+      //      cout << "NULL?=" << (buffer->at(currentFrame) == NULL) << endl;
+            
             buffer->at(currentFrame)->draw(x,y);
+        }
             break;
         default:
             break;
@@ -279,22 +295,33 @@ void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) 
                 player.reset();
                 buffer = _buffer;
                 // keep all current settings
+                
+                bIsFrameNew = true;
+                
+                cout << "DIDIT!!" << endl;
+                
+                
                 return;
             } else {
+                cout << "HHHH" << endl;
                 ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: incomingn buffer does not match the size of the current video, so loading as new buffer.";
             }
         } else {
+            cout << "1111" << endl;
             ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: this is not a video player, so loading as a buffer.";
         }
     } else {
+        cout << "qqqq" << endl;
         ofLogError() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: buffer was NULL.";
         close();
         return;
     }
+    cout << "GGGG" << endl;
     
     // loading as a normal buffer
     loadVideoBuffer(_buffer);
 
+    cout << "QQQQ" << endl;
 }
 
 //--------------------------------------------------------------
@@ -403,8 +430,32 @@ float ofxVideoBufferPlayer::getPctFull() /*const of is not const correct */ {
 //--------------------------------------------------------------
 
 void ofxVideoBufferPlayer::update() {
-    if(!isLoaded() || isEmpty() || !isPlaying() || isPaused()) return;
     
+    
+    if(!isLoaded()) {
+        cout << "failed to update - not loaded" << endl;
+        
+        return;
+    }
+    
+    if(isEmpty()) {
+        //cout << "failed to update - is empty" << endl;
+        
+        return;
+    }
+    
+    if(!isPlaying()) {
+        cout << "failed to update - is not playing" << endl;
+        
+        return;
+    }
+    
+    if(isPaused()) {
+        cout << "failed to update - is paused" << endl;
+        
+        return;
+    }
+        
     float now = ofGetElapsedTimef();
         
     // if this is the first time
@@ -746,8 +797,8 @@ float ofxVideoBufferPlayer::getFrameDuration() /*const of is not const correct *
 //--------------------------------------------------------------
 string ofxVideoBufferPlayer::toString() /*const of is not const correct */{
     string stats = "";
-    stats+= ("Count, Size   [" + ofToString(getCount())) + ",";
-    stats+= ofToString(getSize()) + "]\n";
+    stats+= ("Count, Size   [" + ofToString(getCount())) + "," + ofToString(getSize()) + "]\n";
+    stats+=  "IsEmpty       [" + ofToString(isEmpty()) + "]\n";
     stats+=  "Loop Points   [" + ofToString(getLoopPointStart()) + "," + ofToString(getLoopPointEnd()) + "]\n";
     
     stats+= "Buffer Type   [";
@@ -762,11 +813,11 @@ string ofxVideoBufferPlayer::toString() /*const of is not const correct */{
         // cout << "IN HERE BUFFER PLAYER!! > source type == " << sourceType << endl;
         ofxVideoBufferType type = getVideoBuffer()->getBufferType();
         if(type == OFX_VIDEO_BUFFER_FIXED) {
-            stats+="FIXED";
+            stats+="Buffer Player FIXED";
         } else if(type == OFX_VIDEO_BUFFER_CIRCULAR) {
-            stats+="CIRCULAR";
+            stats+="Buffer Player CIRCULAR";
         } else if(type == OFX_VIDEO_BUFFER_PASSTHROUGH) {
-            stats+="PASSTHROUGH";
+            stats+="Buffer Player PASSTHROUGH";
         }
     }
     

@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <set>
 #include "ofMain.h"
 #include "ofxVideoFrame.h"
 #include "ofxVideoBufferData.h"
@@ -34,6 +35,15 @@ enum ofxVideoBufferType {
     OFX_VIDEO_BUFFER_FIXED,
     OFX_VIDEO_BUFFER_CIRCULAR,
     OFX_VIDEO_BUFFER_PASSTHROUGH,
+};
+
+class ofxVideoBuffer;
+
+class ofxVideoBufferListener {
+public:
+    virtual void bufferSizeChanged(ofxVideoBuffer* buffer) = 0;
+    virtual void bufferCleared(ofxVideoBuffer* buffer) = 0;
+    virtual void bufferLoadComplete(ofxVideoBuffer* buffer) = 0;
 };
 
 class ofxVideoBuffer {
@@ -47,11 +57,19 @@ public:
     void  update(ofEventArgs & args);  // notify in update so the notification is thread safe
     void  update();
     
-    void  loadImage(const string& _filename);
-    void  loadMovie(const string& _filename);  // this will load a video into the buffer in another thread
-	void  loadMovie(const string& _filename, int _startFrame, int _endFrame); // "
-    bool  isLoading();             // checks to see if the video is loading
+    void  loadImageAsync(const string& _filename);
+    void  loadMovieAsync(const string& _filename);  // this will load a video into the buffer in another thread
+	void  loadMovieAsync(const string& _filename, int _startFrame, int _endFrame); // "
+
+    bool  isLoaded() const;
+    bool  isLoading() const;             // checks to see if the video is loading
     
+    float getPercentLoaded() const;
+    
+    ofxVideoBufferLoaderState getState() const;
+
+    ofxVideoBufferLoader& getLoaderRef();
+
     //bool  bufferFrame(const ofPixels& pixels);  // frames are added to the buffer here
     bool bufferFrame(const ofxSharedVideoFrame& frame);
     
@@ -62,10 +80,10 @@ public:
     bool  isEmpty() const; // is the count == 0?
     
     // counts and sizes
-    int   getCount() const; // the number of valid frames i.e. (head + 1)
+    size_t getCount() const; // the number of valid frames i.e. (head + 1) - count
 
-    bool  setSize(int maxFrames); // set maximum buffer size (will not clear)
-    int   getSize() const;        // get maximum buffer size
+    bool   setSize(int maxFrames); // set maximum buffer size (will not clear)
+    size_t getSize() const;        // get maximum buffer size (the size() of the underlying ofxVideoBufferData)
     
     bool  isFull() const;         // do all frames hold valid data?
     float getPercentFull() const; // how full is the buffer
@@ -93,10 +111,25 @@ public:
     
     string toString();
 
+    // listener interactions
+    
+    void reportSizeChanged();
+    void reportCleared();
+    void reportLoadComplete();
+    
+    bool hasListener(ofxVideoBufferListener* listener);
+    bool addListener(ofxVideoBufferListener* listener);
+    bool removeListener(ofxVideoBufferListener* listener);
+    
 protected:
+    
+    set< ofxVideoBufferListener* >::iterator listenersIter;
+    set< ofxVideoBufferListener* > listeners;
+    
+    
     bool                 readOnly; // just a loose flag for preventing writes
     
-    int                  count;  // the count is the number of "valid" frames in the buffer
+    size_t               count;  // the count is the number of "valid" frames in the buffer
     ofxVideoBufferType   mode;   // the buffer mode (circular, etc)
     ofxVideoBufferData   buffer; // frames are stored in this buffer
     
@@ -112,5 +145,3 @@ protected:
 };
 
 typedef ofPtr < ofxVideoBuffer > ofxSharedVideoBuffer;
-
-

@@ -62,7 +62,11 @@ void testApp::update() {
     vidIpCam.update();
     vidPlayer.update();
     
-    for(int i = 0; i < bufferPlayers.size(); i++) {
+    for(size_t i = 0; i < buffers.size(); i++) {
+        buffers[i]->update();
+    }
+    
+    for(size_t i = 0; i < bufferPlayers.size(); i++) {
         bufferPlayers[i]->update();;
     }
 
@@ -139,15 +143,17 @@ void testApp::draw(){
     
     if(isRecording) {
         
-        ofxSharedVideoFrame frame(new ofImage());
         
         if(currentVideoSource == 0 && vidGrabber.isFrameNew()) {
+            ofxSharedVideoFrame frame(new ofImage());
             frame->setFromPixels(vidGrabber.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 1 ) {//&& vidIpCam.isFrameNew()) { // TODO
+            ofxSharedVideoFrame frame(new ofImage());
             frame->setFromPixels(vidIpCam.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         } else if(currentVideoSource == 2 && vidPlayer.isFrameNew() ) {
+            ofxSharedVideoFrame frame(new ofImage());
             frame->setFromPixels(vidPlayer.getPixelsRef());
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->bufferFrame(frame);
         }
@@ -178,6 +184,14 @@ void testApp::draw(){
             ofRect(x,y+camHeight-5,camWidth*p,5);
         }
 
+        ofPushStyle();
+        float ff = bufferPlayers[i]->getFrame() / (float)bufferPlayers[i]->getSize();
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        ofSetColor(0,255,0);
+        ofRect(x + camWidth*ff,y+camHeight-2.5,3,10);
+        ofPopStyle();
+
+        
         ofSetColor(255);
         // draw some stats
         string stats = bufferPlayers[i]->toString();
@@ -254,8 +268,8 @@ void testApp::keyPressed  (int key){
         case 'x':
             bufferPlayers[currentBufferPlayer]->getVideoBuffer()->clear();
             break;
-        case '0':
-            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->loadMovie("fingers.mov");
+        case '?':
+            bufferPlayers[currentBufferPlayer]->getVideoBuffer()->loadMovieAsync("fingers.mov");
             break;
         case '-':
             speed -= .05;

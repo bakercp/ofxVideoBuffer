@@ -30,6 +30,8 @@
 		FD49223515DA0AD900E72D68 /* ofxVideoBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49222E15DA0AD900E72D68 /* ofxVideoBuffer.cpp */; };
 		FD49223615DA0AD900E72D68 /* ofxVideoBufferLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49223115DA0AD900E72D68 /* ofxVideoBufferLoader.cpp */; };
 		FD49223715DA0AD900E72D68 /* ofxVideoBufferPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49223315DA0AD900E72D68 /* ofxVideoBufferPlayer.cpp */; };
+		FD9116EA15DD6DC100657B2A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9116E915DD6DC100657B2A /* QuartzCore.framework */; };
+		FD9116ED15DD6DC800657B2A /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9116EC15DD6DC800657B2A /* QTKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +102,8 @@
 		FD49223215DA0AD900E72D68 /* ofxVideoBufferLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoBufferLoader.h; sourceTree = "<group>"; };
 		FD49223315DA0AD900E72D68 /* ofxVideoBufferPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxVideoBufferPlayer.cpp; sourceTree = "<group>"; };
 		FD49223415DA0AD900E72D68 /* ofxVideoBufferPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoBufferPlayer.h; sourceTree = "<group>"; };
+		FD9116E915DD6DC100657B2A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = ../../../../../../../../../System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
+		FD9116EC15DD6DC800657B2A /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = ../../../../../../../../../System/Library/Frameworks/QTKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,8 @@
 				E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */,
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
+				FD9116EA15DD6DC100657B2A /* QuartzCore.framework in Frameworks */,
+				FD9116ED15DD6DC800657B2A /* QTKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +146,8 @@
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD9116EC15DD6DC800657B2A /* QTKit.framework */,
+				FD9116E915DD6DC100657B2A /* QuartzCore.framework */,
 				E4C2424410CC5A17004149E2 /* AppKit.framework */,
 				E4C2424510CC5A17004149E2 /* Cocoa.framework */,
 				E4C2424610CC5A17004149E2 /* IOKit.framework */,

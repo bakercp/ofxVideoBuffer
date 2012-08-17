@@ -30,6 +30,8 @@
 		FD49224315DA0C1200E72D68 /* ofxVideoBufferPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49223F15DA0C1200E72D68 /* ofxVideoBufferPlayer.cpp */; };
 		FD49226515DA0C5900E72D68 /* ofxVideoSinkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49225A15DA0C5900E72D68 /* ofxVideoSinkInterface.cpp */; };
 		FD49226615DA0C5900E72D68 /* ofxVideoSourceInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD49225C15DA0C5900E72D68 /* ofxVideoSourceInterface.cpp */; };
+		FD9116E015DD6D7C00657B2A /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9116DF15DD6D7C00657B2A /* QTKit.framework */; };
+		FD9116E315DD6D8400657B2A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD9116E215DD6D8400657B2A /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +102,8 @@
 		FD49225B15DA0C5900E72D68 /* ofxVideoSinkInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoSinkInterface.h; sourceTree = "<group>"; };
 		FD49225C15DA0C5900E72D68 /* ofxVideoSourceInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxVideoSourceInterface.cpp; sourceTree = "<group>"; };
 		FD49225D15DA0C5900E72D68 /* ofxVideoSourceInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVideoSourceInterface.h; sourceTree = "<group>"; };
+		FD9116DF15DD6D7C00657B2A /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = ../../../../../../../../../System/Library/Frameworks/QTKit.framework; sourceTree = "<group>"; };
+		FD9116E215DD6D8400657B2A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = ../../../../../../../../../System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,8 @@
 				E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */,
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
+				FD9116E015DD6D7C00657B2A /* QTKit.framework in Frameworks */,
+				FD9116E315DD6D8400657B2A /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +146,8 @@
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD9116E215DD6D8400657B2A /* QuartzCore.framework */,
+				FD9116DF15DD6D7C00657B2A /* QTKit.framework */,
 				E4C2424410CC5A17004149E2 /* AppKit.framework */,
 				E4C2424510CC5A17004149E2 /* Cocoa.framework */,
 				E4C2424610CC5A17004149E2 /* IOKit.framework */,
