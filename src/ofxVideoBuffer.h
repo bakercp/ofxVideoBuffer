@@ -41,7 +41,6 @@ class ofxVideoBuffer;
 
 class ofxVideoBufferListener {
 public:
-    virtual void bufferSizeChanged(ofxVideoBuffer* buffer) = 0;
     virtual void bufferCleared(ofxVideoBuffer* buffer) = 0;
     virtual void bufferLoadComplete(ofxVideoBuffer* buffer) = 0;
 };
@@ -113,7 +112,6 @@ public:
 
     // listener interactions
     
-    void reportSizeChanged();
     void reportCleared();
     void reportLoadComplete();
     

@@ -294,6 +294,8 @@ void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) 
                 sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
                 player.reset();
                 buffer = _buffer;
+                buffer->addListener(this);
+
                 // keep all current settings
                 
                 bIsFrameNew = true;
@@ -330,6 +332,7 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxSharedVideoBuffer _buffer) {
     if(_buffer != NULL) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
         buffer = _buffer;
+        buffer->addListener(this);
     } else {
         close();
         ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadVideoBuffer - null buffer loaded, no change.");

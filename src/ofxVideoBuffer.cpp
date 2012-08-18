@@ -95,6 +95,7 @@ void ofxVideoBuffer::update() {
         count = buffer.size(); // set it to the last valid
         if(buffer.size() == loader.getFrameCount()) {
             loader.reset();
+            reportLoadComplete();
         }
         
     } else {
@@ -112,7 +113,7 @@ void ofxVideoBuffer::loadImageAsync(const string& _filename) {
 //--------------------------------------------------------------
 void ofxVideoBuffer::loadMovieAsync(const string& _filename) {
     clear(); // clear count
-    loadMovieAsync(_filename,0,INT_MAX);
+    loader.loadMovieAsync(&buffer,_filename,0,INT_MAX);
 }
 
 //--------------------------------------------------------------
@@ -215,6 +216,7 @@ size_t ofxVideoBuffer::getCount() const {
 void ofxVideoBuffer::clear() {
     // does not immediately release the memory or references to shared ptrs
     count = 0;
+    reportCleared();
 }
 
 //--------------------------------------------------------------
@@ -320,21 +322,6 @@ string ofxVideoBuffer::toString() {
     ss << "\tIsReadOnly="<< isReadOnly() << endl;
     
     return ss.str();
-}
-
-//--------------------------------------------------------------
-void ofxVideoBuffer::reportSizeChanged() {
-    for(listenersIter = listeners.begin();
-        listenersIter != listeners.end();) {
-        
-        if((*listenersIter) != NULL) {
-            (*listenersIter)->bufferSizeChanged(this);
-            listenersIter++;
-        } else {
-            ofLogError("ofxVideoBuffer") << "listener become NULL, removing from listeners.";
-            listeners.erase(*listenersIter++);
-        }
-    }
 }
 
 //--------------------------------------------------------------

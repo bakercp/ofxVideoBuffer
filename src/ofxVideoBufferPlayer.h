@@ -41,7 +41,7 @@ enum ofxVideoBufferPlayerSourceType {
     OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER = 3,
 };
 
-class ofxVideoBufferPlayer : public ofBaseVideoDraws {
+class ofxVideoBufferPlayer : public ofBaseVideoDraws , public ofxVideoBufferListener {
 public:
     ofxVideoBufferPlayer(); 
     virtual ~ofxVideoBufferPlayer();
@@ -154,6 +154,12 @@ public:
     
     string toString() /*const of is not const correct */;
     
+    void bufferCleared(ofxVideoBuffer* buffer) {
+        currentFrame = 0;
+    }
+    
+    void bufferLoadComplete(ofxVideoBuffer* buffer) {}
+
     
 protected:
 
