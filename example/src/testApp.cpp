@@ -184,12 +184,32 @@ void testApp::draw(){
             ofRect(x,y+camHeight-5,camWidth*p,5);
         }
 
-        ofPushStyle();
-        float ff = bufferPlayers[i]->getFrame() / (float)bufferPlayers[i]->getSize();
-        ofSetRectMode(OF_RECTMODE_CENTER);
-        ofSetColor(0,255,0);
-        ofRect(x + camWidth*ff,y+camHeight-2.5,3,10);
-        ofPopStyle();
+        {
+            ofPushStyle();
+            float ff = bufferPlayers[i]->getFrame() / (float)bufferPlayers[i]->getSize();
+            ofSetRectMode(OF_RECTMODE_CENTER);
+            ofSetColor(0,255,0);
+            ofRect(x + camWidth*ff,y+camHeight-2.5,3,10);
+            ofPopStyle();
+        }
+        
+        {
+            ofPushStyle();
+            float ff = bufferPlayers[i]->getLoopPointStart() / (float)bufferPlayers[i]->getSize();
+            ofSetRectMode(OF_RECTMODE_CENTER);
+            ofSetColor(0,0,255);
+            ofRect(x + camWidth*ff,y+camHeight-2.5,3,10);
+            ofPopStyle();
+        }
+        
+        {
+            ofPushStyle();
+            float ff = bufferPlayers[i]->getLoopPointEnd() / (float)bufferPlayers[i]->getSize();
+            ofSetRectMode(OF_RECTMODE_CENTER);
+            ofSetColor(0,0,255);
+            ofRect(x + camWidth*ff,y+camHeight-2.5,3,10);
+            ofPopStyle();
+        }
 
         
         ofSetColor(255);
