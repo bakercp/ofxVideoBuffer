@@ -294,21 +294,9 @@ void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) 
                 sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
                 player.reset();
                 buffer = _buffer;
-<<<<<<< Updated upstream
-                buffer->addListener(this);
-
-=======
                 //buffer->addListener(this); // TODO: this is still broken
->>>>>>> Stashed changes
                 // keep all current settings
                 bIsFrameNew = true;
-<<<<<<< Updated upstream
-                
-                cout << "DIDIT!!" << endl;
-                
-                
-=======
->>>>>>> Stashed changes
                 return;
             } else {
                 ofLogWarning("ofxVideoBufferPlayer") << "replaceMovieWithBuffered: incomingn buffer does not match the size of the current video, so loading as new buffer.";
@@ -321,12 +309,10 @@ void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) 
         close();
         return;
     }
-    cout << "GGGG" << endl;
-    
+
     // loading as a normal buffer
     loadVideoBuffer(_buffer);
 
-    cout << "QQQQ" << endl;
 }
 
 //--------------------------------------------------------------
@@ -335,13 +321,10 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxSharedVideoBuffer _buffer) {
     if(_buffer != NULL) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
         buffer = _buffer;
-<<<<<<< Updated upstream
-        buffer->addListener(this);
-=======
+        //buffer->addListener(this);
         ofLogVerbose("ofxVideoBufferPlayer") << "buffer loaded.";
         update();
         //buffer->addListener(this); // TODO : << using "this" is dangerous b/c it mixes shared and normal pointers
->>>>>>> Stashed changes
     } else {
         close();
         ofLogError("ofxVideoBufferPlayer") << "loadVideoBuffer - null buffer loaded, no change.";
@@ -457,18 +440,19 @@ void ofxVideoBufferPlayer::update() {
     }
     
     if(!isPlaying()) {
-        cout << "failed to update - is not playing" << endl;
+       // cout << "failed to update - is not playing" << endl;
         
         return;
     }
     
+    float now = ofGetElapsedTimef();
+
     if(isPaused()) {
-        cout << "failed to update - is paused" << endl;
-        
+//        cout << "failed to update - is paused" << endl;
+        lastFramePushTime = now;
         return;
     }
         
-    float now = ofGetElapsedTimef();
         
     // if this is the first time
     if(lastFramePushTime < -1) {
