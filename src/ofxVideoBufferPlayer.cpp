@@ -85,7 +85,7 @@ void ofxVideoBufferPlayer::close() {
 unsigned char * ofxVideoBufferPlayer::getPixels() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "getPixels() - no source.";
             return emptyFrame->getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
@@ -108,7 +108,7 @@ ofPixelsRef ofxVideoBufferPlayer::getPixelsRef() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             return emptyFrame->getPixelsRef();
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixelsRef() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "getPixelsRef() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return image->getPixelsRef();
@@ -135,7 +135,7 @@ void ofxVideoBufferPlayer::draw(float x,float y) {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             emptyFrame->draw(x,y);
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::draw() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "draw() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             image->draw(x,y);
@@ -176,7 +176,7 @@ void  ofxVideoBufferPlayer::draw(float x,float y,float w, float h) {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             emptyFrame->draw(x,y,w,h);
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::draw() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "draw() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             image->draw(x,y,w,h);
@@ -202,7 +202,7 @@ float ofxVideoBufferPlayer::getHeight() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             return emptyFrame->getHeight();
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getHeight() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "getHeight() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return image->getHeight();
@@ -227,7 +227,7 @@ float ofxVideoBufferPlayer::getWidth() {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             return emptyFrame->getWidth();
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getWidth() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "getWidth() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return image->getWidth();
@@ -266,7 +266,7 @@ void ofxVideoBufferPlayer::loadImage(const string& filename) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE;
     } else {
         close();
-        ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadImage - failure to load");
+        ofLogError("ofxVideoBufferPlayer") << "loadImage - failure to load";
     }
 }
 
@@ -280,7 +280,7 @@ void ofxVideoBufferPlayer::loadMovie(const string& filename) {
         player->setSpeed(0);
     } else {
         close();
-        ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadMovie - failure to load");
+        ofLogError("ofxVideoBufferPlayer") << "loadMovie - failure to load";
     }
 }
 
@@ -288,33 +288,36 @@ void ofxVideoBufferPlayer::loadMovie(const string& filename) {
 void ofxVideoBufferPlayer::replaceMovieWithBuffer(ofxSharedVideoBuffer _buffer) {
     if(_buffer != NULL) {
         if(isVideoPlayer()) {
-            // trust that this is a copy
+            // TODO: trust that this is a copy b/c the same # of frames
             if(getSize() == _buffer->getSize()) {
                 // jump right into things without skipping a beat (fingers crossed)
                 sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
                 player.reset();
                 buffer = _buffer;
+<<<<<<< Updated upstream
                 buffer->addListener(this);
 
+=======
+                //buffer->addListener(this); // TODO: this is still broken
+>>>>>>> Stashed changes
                 // keep all current settings
-                
                 bIsFrameNew = true;
+<<<<<<< Updated upstream
                 
                 cout << "DIDIT!!" << endl;
                 
                 
+=======
+>>>>>>> Stashed changes
                 return;
             } else {
-                cout << "HHHH" << endl;
-                ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: incomingn buffer does not match the size of the current video, so loading as new buffer.";
+                ofLogWarning("ofxVideoBufferPlayer") << "replaceMovieWithBuffered: incomingn buffer does not match the size of the current video, so loading as new buffer.";
             }
         } else {
-            cout << "1111" << endl;
-            ofLogWarning() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: this is not a video player, so loading as a buffer.";
+            ofLogWarning("ofxVideoBufferPlayer") << "replaceMovieWithBuffered: this is not a video player, so loading as a buffer.";
         }
     } else {
-        cout << "qqqq" << endl;
-        ofLogError() << "ofxVideoBufferPlayer::replaceMovieWithBuffered: buffer was NULL.";
+        ofLogError("ofxVideoBufferPlayer") << "ofxVideoBufferPlayer::replaceMovieWithBuffered: buffer was NULL.";
         close();
         return;
     }
@@ -332,10 +335,16 @@ void ofxVideoBufferPlayer::loadVideoBuffer(ofxSharedVideoBuffer _buffer) {
     if(_buffer != NULL) {
         sourceType = OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER;
         buffer = _buffer;
+<<<<<<< Updated upstream
         buffer->addListener(this);
+=======
+        ofLogVerbose("ofxVideoBufferPlayer") << "buffer loaded.";
+        update();
+        //buffer->addListener(this); // TODO : << using "this" is dangerous b/c it mixes shared and normal pointers
+>>>>>>> Stashed changes
     } else {
         close();
-        ofLog(OF_LOG_ERROR, "ofxVideoBufferPlayer::loadVideoBuffer - null buffer loaded, no change.");
+        ofLogError("ofxVideoBufferPlayer") << "loadVideoBuffer - null buffer loaded, no change.";
     }
 }
 
@@ -585,7 +594,7 @@ ofTexture& ofxVideoBufferPlayer::getTextureReference() {
 
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getTextureReference() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "ofxVideoBufferPlayer::getTextureReference() - no source.";
             return emptyFrame->getTextureReference();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
@@ -607,7 +616,7 @@ void ofxVideoBufferPlayer::setUseTexture(bool bUseTex) {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             emptyFrame->setUseTexture(bUseTex);
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "ofxVideoBufferPlayer::setUseTexture() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return image->setUseTexture(bUseTex);
@@ -705,7 +714,7 @@ ofLoopType ofxVideoBufferPlayer::getLoopType() const {
 void ofxVideoBufferPlayer::setFrame(int frame) {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "setFrame() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             currentFrame = 0; // always 0
@@ -776,7 +785,7 @@ float ofxVideoBufferPlayer::getFrameRate() const {
     switch (sourceType) {
         case OFX_VIDEO_PLAYER_SRC_TYPE_NONE:
             return 0.0f;
-            ofLog(OF_LOG_WARNING,"ofxVideoBufferPlayer::getPixels() - no source.");
+            ofLogWarning("ofxVideoBufferPlayer") << "getFrameRate() - no source.";
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_IMAGE:
             return 0.0f;
