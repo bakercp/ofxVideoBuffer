@@ -428,7 +428,7 @@ void ofxVideoBufferPlayer::update() {
     
     
     if(!isLoaded()) {
-        cout << "failed to update - not loaded" << endl;
+       // cout << "failed to update - not loaded" << endl;
         
         return;
     }
