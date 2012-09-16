@@ -49,6 +49,8 @@ public:
     ofxVideoBufferLoader();
     virtual ~ofxVideoBufferLoader();    
 
+    void exit(ofEventArgs& a);
+    
     void loadImageAsync(ofxVideoBufferData* _buffer, const string& _filename);
 	void loadMovieAsync(ofxVideoBufferData* _buffer, const string& _filename);
 	void loadMovieAsync(ofxVideoBufferData* _buffer, const string& _filename, int _startFrame, int _endFrame);

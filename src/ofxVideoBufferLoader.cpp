@@ -27,10 +27,22 @@
 //--------------------------------------------------------------
 ofxVideoBufferLoader::ofxVideoBufferLoader() {
     reset();
+    
+    ofAddListener(ofEvents().exit,this,&ofxVideoBufferLoader::exit);
 }
 
 //--------------------------------------------------------------
-ofxVideoBufferLoader::~ofxVideoBufferLoader() {}
+ofxVideoBufferLoader::~ofxVideoBufferLoader() {
+    waitForThread(true); // close it all down (politely)
+    ofRemoveListener(ofEvents().exit,this,&ofxVideoBufferLoader::exit);
+}
+
+void ofxVideoBufferLoader::exit(ofEventArgs& a) {
+    ofLogVerbose("ofxVideoBufferLoader") << "exit() called.  Cleaning up and exiting.";
+    waitForThread(true); // close it all down (politely)
+    ofRemoveListener(ofEvents().exit,this,&ofxVideoBufferLoader::exit);
+}
+
 
 //--------------------------------------------------------------
 void ofxVideoBufferLoader::loadImageAsync(ofxVideoBufferData* _buffer, const string& _filename) {
