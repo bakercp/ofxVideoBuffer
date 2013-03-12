@@ -96,7 +96,11 @@ unsigned char * ofxVideoBufferPlayer::getPixels() {
             return player->getPixels();
             break;
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame)->getPixels();
+            if(!buffer->isEmpty()) {
+                return buffer->at(currentFrame)->getPixels();
+            } else {
+                return emptyFrame->getPixels();
+            }
             break;
         default:
             break;
@@ -117,7 +121,11 @@ ofPixelsRef ofxVideoBufferPlayer::getPixelsRef() {
             if(isFrameNew()) setFrame(currentFrame);
             return player->getPixelsRef();
         case OFX_VIDEO_PLAYER_SRC_TYPE_VIDEOBUFFER:
-            return buffer->at(currentFrame)->getPixelsRef();
+            if(!buffer->isEmpty()) {
+                return buffer->at(currentFrame)->getPixelsRef();
+            } else {
+                return emptyFrame->getPixelsRef();
+            }
             break;
         default:
             break;

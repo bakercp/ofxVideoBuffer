@@ -190,8 +190,17 @@ ofxSharedVideoFrame ofxVideoBuffer::operator [](int i) const {
 
 //--------------------------------------------------------------
 ofxSharedVideoFrame ofxVideoBuffer::at(int i) const {
-    if(isPassthroughBuffer() || isEmpty()) return buffer[0]; // TODO? this will return buffer's empty frame
-
+    if(isEmpty()) {
+        ofxSharedVideoFrame i(new ofImage());
+        i->allocate(1,1,OF_IMAGE_COLOR);
+        i->update();
+        return i;
+    }
+    
+    if(isPassthroughBuffer() || isEmpty()) {
+        return buffer[0]; // TODO? this will return buffer's empty frame
+    }
+    
     // super modulo
     int r = getCount(); // keep index in range
     if(r != 0) {
