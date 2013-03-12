@@ -119,6 +119,8 @@ public:
     bool addListener(ofxVideoBufferListener* listener);
     bool removeListener(ofxVideoBufferListener* listener);
     
+    bool fequals(float f0, float f1) { return fabs(f1 - f0) < numeric_limits<float>::epsilon(); }
+
 protected:
     
     set< ofxVideoBufferListener* >::iterator listenersIter;
